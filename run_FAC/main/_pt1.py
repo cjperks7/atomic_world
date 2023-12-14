@@ -46,7 +46,7 @@ import time
 import os
 
 __all__ = [
-    'main'
+    'rates'
     ]
 
 ##########################################################
@@ -55,7 +55,7 @@ __all__ = [
 #
 ##########################################################
 
-def main(
+def rates(
     # Input
     ion=None,           # Name of ion species
     save_path=None,     # path/to/save
@@ -143,6 +143,12 @@ def main(
 
     # Builds an energy level table in memory from file
     fac.MemENTable(name+'b.en')
+
+    # Calculates Maxwellian-averaged rate coefficients
+    temps = list(np.logspace(np.log10(8.62e0), np.log10(8.62e4), 41))
+    fac.MaxwellRate(name+'b.ce', name+'ce.mr', -1, -1, temp)
+    fac.MaxwellRate(name+'b.rr', name+'rr.mr', -1, -1, temp)
+    fac.MaxwellRate(name+'b.ci', name+'ci.mr', -1, -1, temp)
 
     # Converts binary file to ASCII
     #   Optional arg: v=1 -> verbose
