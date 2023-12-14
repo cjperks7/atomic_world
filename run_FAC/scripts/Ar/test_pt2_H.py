@@ -40,7 +40,7 @@ nele = 1 # H-like
 
 
 # Electron kinetic profiles
-Te_eV = 10e3 # [eV]
+Te_eV = 1370 # [eV]
 ne_cm3 = 1e14 # [cm^-3]
 
 # Impurity kinetic profiles
@@ -116,30 +116,39 @@ p = 'test/%s%02d'%(ion, nele)
 
 
 # add the ion with nele number of electrons
+crm.AddIon(0, 0.0, '%sb'%p)
 crm.AddIon(nele, ni_cm3, '%sb'%p)
 
 # Reads the data files
-crm.SetBlocks(-1)
+#   If <0 -> only transitions within ion state
+crm.SetBlocks(0)
 
 # Sets the electron distribution function
 crm.SetEleDist(0, Te_eV, -1, -1)
 
 # Initializes radiative transition rates
-#   If arg =1 then include photo-excitation (inverse process)
+#   If arg =1 then incl. inverse -> photo-excitation (inverse process)
 crm.SetTRRates(0)
 
 # Initializes collisional excitation rate coefficients.
-#   If arg =1 then include collisional de-excitation
+#   If arg =1 then incl. inverse -> collisional de-excitation
 crm.SetCERates(1)
 
 # Initializes collisional ionization rate
-#   If arg =1 then incl. 3-body recomb (not implemented yet)
+#   If arg =1 then incl. inverse -> 3-body recomb (not implemented yet)
 crm.SetCIRates(0)
 
+# Initializes radiative recomgination rates
+#   If arg =1 then incl. inverse -> photoionization
 crm.SetRRRates(0)
 
+# Initializes autoionization rate
+#   If arg=1 then incl. inverse -> dielectronic capture
+crm.SetAIRates(1)
+
 # abundance of the ion with nele number of electrons
-crm.SetAbund(nele, fz)
+crm.SetAbund(0, 0.1)
+crm.SetAbund(nele, fz) # -> overrides density in crm.AddIon
 crm.SetEleDensity(ne_cm3)
 
 # Initializes superlevel blocks of the spectral model
@@ -148,8 +157,11 @@ crm.InitBlocks()
 # Iteration controls
 crm.SetIteration(1e-6, 0.5)
 
+#crm.SetCascade(1)
+
 # Solver
 crm.LevelPopulation()
+#crm.Cascade()
 
 # Prints output data file
 crm.SpecTable(p+'b.sp', 0)
@@ -166,9 +178,9 @@ crm.DumpRates(p+'a.rt1', nele, 1, -1, 1)
 
 crm.DumpRates(p+'a.rt0', nele, 0, -1, 1)  # Energy levels
 crm.DumpRates(p+'a.rt2', nele, 2, -1, 1)  # 2-photon transitions
-#crm.DumpRates(p+'a.rt4', nele, 4, -1, 1) # Radiative recombination
-#crm.DumpRates(p+'a.rt5', nele, 5, -1, 1) # Autoionization
-#crm.DumpRates(p+'a.rt6', nele, 6, -1, 1) # Collisional ionization
+crm.DumpRates(p+'a.rt4', nele, 4, -1, 1) # Radiative recombination
+crm.DumpRates(p+'a.rt5', nele, 5, -1, 1) # Autoionization
+crm.DumpRates(p+'a.rt6', nele, 6, -1, 1) # Collisional ionization
 
 # Prints the Doppler broadened spectrum
 #crm.PlotSpec(p+'b.sp', p+'spec', nele, 0, 3.3e3, 3.4e3, 4e3)

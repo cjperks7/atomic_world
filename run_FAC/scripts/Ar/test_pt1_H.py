@@ -69,7 +69,7 @@ n_spec_max = 11
 
 # String of the ion charge state of interest
 #   Used as file name
-p = 'test/%s%02d'%(ion, nele)
+p = 'test_ai/%s%02d'%(ion, nele)
 
 # Sets the standard values for mass, charge, nuclear radius
 fac.SetAtom(ion)
@@ -541,7 +541,11 @@ for typ1 in groups.keys():
 #fac.TRTable(p+'b.tr', (['ion.0'], 11), (['ion.0'], 11), -1) # same n to same n
 #fac.Reinit(radial = 1, excitation = 1)
 
+fac.MaxwellRate(p+'b.ce', p+'ce.mr', -1, -1, [1370, 3e3, 10e3])
 
+fac.MaxwellRate(p+'b.rr', p+'rr.mr', -1,-1, [1370, 3e3, 10e3])
+
+fac.MaxwellRate(p+'b.ci', p+'ci.mr', -1,-1, [1370, 3e3, 10e3])
 
 ####################################################################
 #
