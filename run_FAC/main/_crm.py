@@ -209,6 +209,8 @@ def prep(
 
             # Level qunatum numbers
             data[ilev]['VNL'] = en[1][ind]['VNL'][ll]
+            data[ilev]['P'] = en[1][ind]['P'][ll]
+            data[ilev]['2J'] = en[1][ind]['2J'][ll]
 
             # Level name
             data[ilev]['sname'] = en[1][ind]['sname'][ll]
