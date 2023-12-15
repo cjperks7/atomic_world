@@ -49,21 +49,21 @@ def write_PEC(
     # Energy -> wavelength
     hc = cnt.h*cnt.c/cnt.e*1e10 # [eV*AA]
 
-    # Loop over density points
-    for nd in np.arange(len(ne_array)):
-        # Loop over temperature points
-        for nt in np.arange(len(Te_array)):
-            # Formats FAC data
-            data, lvls = crm.prep(
-                ion = ion,
-                # FAC controls
-                path_fac = path_fac,
-                nele = len(nz_cm3) -1 -ZZ,
-                nsim = nsim,  # Maximum quantum number to solve for population
-                mode = 'mr',
-                Te_eV = Te_array[nt],
-                )
+    # Loop over temperature points
+    for nt in np.arange(len(Te_array)):
+        # Formats FAC data
+        data, lvls = crm.prep(
+            ion = ion,
+            # FAC controls
+            path_fac = path_fac,
+            nele = len(nz_cm3) -1 -ZZ,
+            nsim = nsim,  # Maximum quantum number to solve for population
+            mode = 'mr',
+            Te_eV = Te_array[nt],
+            )
 
+        # Loop over density points
+        for nd in np.arange(len(ne_array)):
             # Defines wants transitions to get PECs for
             if cpls is None:
                 cpls = {}
@@ -217,8 +217,7 @@ def _write(
                 # Writes data
                 _write_block(
                     f=f,
-                    ty=ty,
-                    cpls=cpls,
+                    data=cpls[upr][lwr][ty],
                     Te_array=Te_array,
                     ne_array=ne_array
                     )
@@ -272,7 +271,7 @@ def _write(
 
                 ISEL +=1
 
-    # Defining level configurations
+    # Defining LS level configurations
     f.write("C\n")
     f.write(
         "C--------------------------------------------------------------------------------\n"
@@ -320,8 +319,59 @@ def _write(
 
 def _write_block(
     f=None,
-    ty=None,
-    cpls=None,
-    Te_array=None,
-    ne_array=None,
+    data=None,      # dim(nd,nt)
+    Te_array=None,  # dim(nt,)
+    ne_array=None,  # dim(nd,)
     ):
+
+    # Replaces zeros
+    data[data<=1e-40] = 1e-40
+
+    # Writes the density array block
+    for rr in np.arange(int(np.ceil(len(ne_array)/8))):
+        row = ''
+
+        for cc in np.arange(8):
+            try:
+                row += (
+                    "{:1.2E}".format(
+                        ne_array[8*rr + ii]
+                        ).rjust(9, ' ')
+                    )
+            except:
+                blah = 0
+
+        f.write(row+"\n")
+
+    # Writes the temperature array block
+    for rr in np.arange(int(np.ceil(len(Te_array)/8))):
+        row = ''
+
+        for cc in np.arange(8):
+            try:
+                row += (
+                    "{:1.2E}".format(
+                        Te_array[8*rr + ii]
+                        ).rjust(9, ' ')
+                    )
+            except:
+                blah = 0
+
+        f.write(row+"\n")
+
+    # Writes the data array block
+    for nd in np.arange(len(ne_array)):
+        for rr in np.arange(int(np.ceil(len(Te_array)/8))):
+        row = ''
+
+            for cc in np.arange(8):
+                try:
+                    row += (
+                        "{:1.2E}".format(
+                            data[nd, 8*rr + ii]
+                            ).rjust(9, ' ')
+                        )
+                except:
+                    blah = 0
+
+            f.write(row+"\n")
