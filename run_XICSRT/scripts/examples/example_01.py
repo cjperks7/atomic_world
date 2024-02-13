@@ -12,7 +12,7 @@ This configuration has a point source, a spherical crystal, and a detector.
 
 import numpy as np
 import xicsrt
-xicsrt.warn_version('0.8')
+#xicsrt.warn_version('0.8')
 
 # 1.
 config = dict()
@@ -36,7 +36,7 @@ config['sources']['source']['zsize'] = 0.00
 # 4.
 config['optics'] = {}
 config['optics']['crystal'] = {}
-config['optics']['crystal']['class_name'] = 'XicsrtOpticCrystalSpherical'
+config['optics']['crystal']['class_name'] = 'XicsrtOpticSphericalCrystal'
 config['optics']['crystal']['check_size'] = True
 config['optics']['crystal']['origin'] = [0.0, 0.0,         0.80374151]
 config['optics']['crystal']['zaxis']  = [0.0, 0.59497864, -0.80374151]
@@ -62,3 +62,13 @@ config['optics']['detector']['ysize']  = 0.2
 
 # 6.
 results = xicsrt.raytrace(config)
+
+import xicsrt.visual.xicsrt_3d__plotly as xicsrt_3d
+fig = xicsrt_3d.figure()
+xicsrt_3d.add_rays(results)
+xicsrt_3d.add_optics(results['config'])
+xicsrt_3d.add_sources(results['config'])
+xicsrt_3d.show()
+
+import xicsrt.visual.xicsrt_2d__matplotlib as xicsrt_2d
+xicsrt_2d.plot_intersect(results, 'detector')

@@ -100,3 +100,9 @@ config['optics']['detector']['ysize']  = 0.2 # Vertical size
 
 # 5.
 results = xicsrt.raytrace(config)
+
+xicsrt.xicsrt_io.save_results(
+  results,
+  filename = 'test.hdf5',
+  path='/home/cjperks/'
+  )
