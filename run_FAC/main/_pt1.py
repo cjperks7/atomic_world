@@ -268,6 +268,8 @@ def _en(
     for typ in groups.keys():
         # If considering a ground states
         if typ == 'grd':
+            print('Structure: ground complex')
+            print([groups[typ][-1], groups['exc'][0]])
             # Calculates atomic structure with first excited state
             fac.Structure(name+'b.en', 
                 [groups[typ][-1], groups['exc'][0]]
@@ -278,6 +280,8 @@ def _en(
 
         # If considering an ionized state
         elif typ == 'ion':
+            print('Structure: ionized complex')
+            print([groups[typ][-1]])
             # Calculates atmoic structure
             fac.Structure(name+'b.en', 
                 [groups[typ][-1]]
@@ -295,8 +299,10 @@ def _en(
 
         # If considering an excited state
         elif typ == 'exc':
+            print('Structure: excited complexes')
             # Loop over excited states excluding the first
             for st in groups[typ][1:]:
+                print([st])
                 # Calculates atomic structure
                 fac.Structure(name+'b.en', 
                     [st]
@@ -314,6 +320,7 @@ def _en(
     # Constructs spectator electron for recombining states
     for st in groups['ion']:
         for nn in range(n_spec_min, n_spec_max+1):
+            print(([st], nn))
             fac.RecStates(name+'b.en',
                 [st],
                 nn
@@ -358,6 +365,7 @@ def _tr(
                             # Loop over spectator electrons
                             for nn2 in range(n_spec_min, n_spec_max+1):
                                 # Calculates radiative transition rates
+                                print(str([st1])+' --> '+str(([st2],nn2)))
                                 fac.TRTable(name+'b.tr',
                                     [st1],
                                     ([st2], nn2)
@@ -368,6 +376,7 @@ def _tr(
                         # ... is interaction with a ground or excited state
                         else:
                             # Calculates radiative transition rates
+                            print(str([st1])+' --> '+str([st2]))
                             fac.TRTable(name+'b.tr',
                                 [st1],
                                 [st2]
@@ -382,6 +391,7 @@ def _tr(
                             # Considers just higher or equal quantum number
                             if ind1 <= ind2:
                                 # Calculates radiative transition rates
+                                print(str([st1])+' --> '+str([st2]))
                                 fac.TRTable(name+'b.tr',
                                     [st1],
                                     [st2]
@@ -396,6 +406,7 @@ def _tr(
                                 # Loop over spectator electrons
                                 for nn2 in range(n_spec_min, n_spec_max+1):
                                     # Calculates radiative transition rates
+                                    print(str([st1])+' --> '+str(([st2],nn2)))
                                     fac.TRTable(name+'b.tr',
                                         [st1],
                                         ([st2], nn2),
@@ -409,6 +420,7 @@ def _tr(
                         for nn1 in range(n_spec_min, n_spec_max+1):
                             for nn2 in range(nn1, n_spec_max+1):
                                 # Calculates radiative transition rates
+                                print(str(([st1],nn1))+' --> '+str(([st2],nn2)))
                                 fac.TRTable(name+'b.tr',
                                     ([st1], nn1),
                                     ([st2], nn2),
@@ -460,6 +472,7 @@ def _ce(
                                 # Consider only the lowest energy spectator electron
                                 if nn2 == n_spec_min:
                                     # Calculates collisional excitation cross-sections
+                                    print(str([st1])+' --> '+str(([st2],nn2)))
                                     fac.CETable(name+'b.ce',
                                         [st1],
                                         ([st2], nn2)
@@ -470,6 +483,7 @@ def _ce(
                         # ... is interaction with a ground or excited state
                         else:
                             # Calculates collisional excitation cross-sections
+                            print(str([st1])+' --> '+str([st2]))
                             fac.CETable(name+'b.ce',
                                 [st1],
                                 [st2]
@@ -486,6 +500,7 @@ def _ce(
                                 # Only calculate coll. exc. from at most the first excited state
                                 if ind1 == 0:
                                     # Calculates collisional excitation cross-sections
+                                    print(str([st1])+' --> '+str([st2]))
                                     fac.CETable(name+'b.ce',
                                         [st1],
                                         [st2]
@@ -527,6 +542,7 @@ def _rr(
                     # Loop over spectator electrons
                     for nn1 in range(n_spec_min, n_spec_max+1):
                         # Calculates rad. recomb and photoionization rates
+                        print(str(([st1],nn1))+' --> '+str([st2]))
                         fac.RRTable(name+'b.rr',
                             ([st1], nn1),
                             [st2]
@@ -540,6 +556,7 @@ def _rr(
 
                 else:
                     # Calculates rad. recomb and photoionization rates
+                    print(str([st1])+' --> '+str([st2]))
                     fac.RRTable(name+'b.rr',
                         [st1],
                         [st2]
@@ -582,6 +599,7 @@ def _ci(
                     # Loop over spectator electrons
                     for nn1 in range(n_spec_min, n_spec_max+1):
                         # Calculates collisional excitation cross-sections
+                        print(str(([st1],nn1))+' --> '+str([st2]))
                         fac.CITable(name+'b.ci',
                             ([st1], nn1),
                             [st2]
@@ -592,6 +610,7 @@ def _ci(
 
                 else:
                     # Calculates collisional excitation cross-sections
+                    print(str([st1])+' --> '+str([st2]))
                     fac.CITable(name+'b.ci',
                         [st1],
                         [st2]
@@ -633,6 +652,7 @@ def _ai(
                     # Loop over spectator electrons
                     for nn1 in range(n_spec_min, n_spec_max+1):
                         # Calculates autoionization rates
+                        print(str(([st1],nn1))+' --> '+str([st2]))
                         fac.AITable(name+'b.ai',
                             ([st1], nn1),
                             [st2]
@@ -643,6 +663,7 @@ def _ai(
 
                 else:
                     # Calculates autoionization rates
+                    print(str([st1])+' --> '+str([st2]))
                     fac.AITable(name+'b.ai',
                         [st1],
                         [st2]
