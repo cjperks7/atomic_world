@@ -23,6 +23,7 @@ dout = rtfw.get_west(
     )
 
 '''
+scp CP028959@altair.partenaires.cea.fr:/home/CP028959/work/pumpout/shots/59984_summary.npz .
 
 # Plots loaded 
 dout = np.load(

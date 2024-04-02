@@ -59,6 +59,7 @@ def get_west(
             'ece',
             'icrf',
             'rad',
+            'ohm',
             'xics',
             'isotope_ratio',
             ]
@@ -105,6 +106,12 @@ def get_west(
     # Loads bolometry data
     if 'rad' in quants:
         dout = _get_rad(
+            dout=dout
+            )
+
+    # Loads ohmic power
+    if 'ohm' in quants:
+        dout = _get_ohm(
             dout=dout
             )
 
@@ -239,6 +246,13 @@ def plt_west(
             dout['exp']['rad']['time_s'],
             dout['exp']['rad']['Prad_tot_kW'],
             label = 'Radiated power'
+            )
+
+    if 'ohm' in dout['exp'].keys():
+        ax[1,1].plot(
+            dout['exp']['ohm']['time_s'],
+            dout['exp']['ohm']['Pohm_tot_kW'],
+            label = 'Ohmic power'
             )
 
     ax[1,1].grid('on')
@@ -517,6 +531,27 @@ def _get_rad(
 
     # Total radiated power
     data['Prad_tot_kW'] = bolo.power_radiated_total/1e3 # dim(ntime,)
+
+    # Output
+    return dout
+
+# Loads ohmic power
+def _get_ohm(
+    dout=None
+    ):
+
+    # Init
+    dout['exp']['ohm'] = {}
+    data = dout['exp']['ohm']
+
+    # summary IDS
+    summ = imas_west.get(dout['shot'], 'summary')
+
+    # Time basis
+    data['time_s'] = summ.time - dout['t_ignitron'] # dim(ntime,)
+
+    # Total radiated power
+    data['Pohm_tot_kW'] = summ.global_quantities.power_ohm.value/1e3 # dim(ntime,)
 
     # Output
     return dout
