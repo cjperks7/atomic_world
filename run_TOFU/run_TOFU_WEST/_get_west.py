@@ -8,14 +8,19 @@ April 1st, 2024
 '''
 
 # Modules
-import tofu_west as tfw
-import imas
-import imas_west
-import pywed as pw
+try:
+    import tofu_west as tfw
+    import imas
+    import imas_west
+    import pywed as pw
+except:
+    print('No access to WEST data')
 
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, os
+
+plt.rcParams.update({'font.size': 14})
 
 plt.switch_backend('Qt5Agg')
 plt.ion()
@@ -60,12 +65,12 @@ def get_west(
 
     if dout is None:
         dout = {}
-    dout['exp'] = {}
-    dout['shot'] = int(shot)
-    dout['device'] = 'WEST'
+        dout['exp'] = {}
+        dout['shot'] = int(shot)
+        dout['device'] = 'WEST'
 
-    # Start time
-    dout['t_ignitron'] = pw.tsmat(dout['shot'], 'IGNITRON|1')
+        # Start time
+        dout['t_ignitron'] = pw.tsmat(dout['shot'], 'IGNITRON|1')
 
     # Loads equilibrium data
     if 'eq' in quants:
@@ -156,7 +161,8 @@ def plt_west(
     nlvls = 30,
     ):
 
-    fig, ax = plt.subplots(2,2)
+    fig, ax = plt.subplots(2,4)
+    fig.tight_layout(pad=0.25)
 
     # Plot interferomtry
     if 'interf' in dout['exp'].keys():
@@ -169,6 +175,12 @@ def plt_west(
         ax[0,0].set_xlabel('time [s]')
         ax[0,0].set_ylabel('line-integrated ne [m^-2]')
 
+        ax[0,0].set_ylim(
+            0,
+            np.nanmax(dout['exp']['interf']['ne_m2'].flatten())*1.1
+            )
+        ax[0,0].set_xlim(0,10)
+
     # Plots ECE
     if 'ece' in dout['exp'].keys():
         ax[0,1].plot(
@@ -180,6 +192,12 @@ def plt_west(
         ax[0,1].set_xlabel('time [s]')
         ax[0,1].set_ylabel('Te [eV]')
 
+        ax[0,1].set_ylim(
+            0,
+            np.nanmax(dout['exp']['ece']['Te_eV'].flatten())*1.1
+            )
+        ax[0,1].set_xlim(0,10)
+
     # PLots H/H+D
     if 'isotope' in dout['exp'].keys():
         for spec in dout['exp']['isotope'].keys():
@@ -189,9 +207,23 @@ def plt_west(
                 label = spec
                 )
 
+            if isinstance(t_plt, list):
+                t_ind = np.where(
+                    (dout['exp']['isotope'][spec]['time_s'] >= t_plt[0])
+                    & (dout['exp']['isotope'][spec]['time_s'] <= t_plt[1])
+                    )[0]
+
+                H_HD_mean = np.mean(dout['exp']['isotope'][spec]['H/H+D'][t_ind])*100
+                ax[0,2].plot([t_plt[0],t_plt[1]], [H_HD_mean, H_HD_mean], '--', linewidth=5)
+
+
+
         ax[0,2].set_xlabel('time [s]')
         ax[0,2].set_ylabel('H/H+D [%]')
-        ax[0,2].legend()
+        leg = ax[0,2].legend()
+        leg.set_draggable('on')
+        ax[0,2].grid('on')
+        ax[0,2].set_xlim(0,10)
 
     # Plots powers
     if 'icrf' in dout['exp'].keys():
@@ -212,16 +244,23 @@ def plt_west(
     ax[1,1].grid('on')
     ax[1,1].set_xlabel('time [s]')
     ax[1,1].set_ylabel('power [kW]')
-    ax[1,1].legend()
+    leg1 = ax[1,1].legend()
+    leg1.set_draggable('on')
+    ax[1,1].set_xlim(0,10)
 
     # Plots equilibrium
     if 'eq' in dout['exp'].keys():
         if t_plt is None:
-            t_plt = int(len(dout['exp']['eq']['time_s'])/2)
+            t_ind = int(len(dout['exp']['eq']['time_s'])/2)
 
-        else:
-            t_plt = np.argmin(abs(
+        elif isinstance(t_plt,float):
+            t_ind = np.argmin(abs(
                 t_plt - dout['exp']['eq']['time_s']
+                ))
+
+        elif isinstance(t_plt,list):
+            t_ind = np.argmin(abs(
+                np.mean(t_plt) - dout['exp']['eq']['time_s']
                 ))
 
         # Plots stored energy
@@ -231,17 +270,19 @@ def plt_west(
             )
         ax[1,2].set_xlabel('time [s]')
         ax[1,2].set_ylabel('Wmhd [kJ]')
+        ax[1,2].grid('on')
+        ax[1,2].set_xlim(0,10)
 
         lvls = np.linspace(
-            np.nanmin(dout['exp']['eq']['psi_vals'][t_plt, ...]),
-            np.nanmax(dout['exp']['eq']['psi_vals'][t_plt, ...]),
+            np.nanmin(dout['exp']['eq']['psi_vals'][t_ind, ...]),
+            np.nanmax(dout['exp']['eq']['psi_vals'][t_ind, ...]),
             nlvls
             )
 
         ax[1,0].contour(
             dout['exp']['eq']['psi_R'],
             dout['exp']['eq']['psi_Z'],
-            np.squeeze(dout['exp']['eq']['psi_vals'][t_plt, ...]),
+            np.squeeze(dout['exp']['eq']['psi_vals'][t_ind, ...]),
             levels = lvls,
             colors = 'blue',
             linestyles ='-',
@@ -251,8 +292,8 @@ def plt_west(
         ax[1,0].contour(
             dout['exp']['eq']['psi_R'],
             dout['exp']['eq']['psi_Z'],
-            np.squeeze(dout['exp']['eq']['psi_vals'][t_plt, ...]),
-            levels = (dout['exp']['eq']['psi_LCFS'][t_plt],),
+            np.squeeze(dout['exp']['eq']['psi_vals'][t_ind, ...]),
+            levels = (dout['exp']['eq']['psi_LCFS'][t_ind],),
             colors = 'tab:red',
             linestyles ='-',
             )
@@ -265,7 +306,50 @@ def plt_west(
 
         ax[1,0].grid('on')
         ax[1,0].set_xlabel('R [m]')
-        ax[1,0].set_ylabel('Z [m]')
+        ax[1,0].set_ylabel('Z [m] (t=%1.2f s)'%(dout['exp']['eq']['time_s'][t_ind]))
+
+    # Plots fitted profiles
+    if 'profs' in dout['exp'].keys():
+        if t_plt is None:
+            t_ind = int(len(dout['exp']['profs']['time_s'])/2)
+
+        elif isinstance(t_plt, float):
+            t_ind = np.argmin(abs(
+                t_plt - dout['exp']['profs']['time_s']
+                ))
+
+        elif isinstance(t_plt,list):
+            t_ind = np.where(
+                (dout['exp']['profs']['time_s'] >= t_plt[0])
+                & (dout['exp']['profs']['time_s'] <= t_plt[1])
+                )[0]
+            
+
+        ax[0,3].plot(
+            dout['exp']['profs']['rho_p'][t_ind,:].T,
+            dout['exp']['profs']['ne_m3'][t_ind,:].T
+            )
+
+        ax[0,3].grid('on')
+        ax[0,3].set_xlabel('rho_pol (sq. pol. flux) [norm]')
+        
+
+        ax[1,3].plot(
+            dout['exp']['profs']['rho_p'][t_ind,:].T,
+            dout['exp']['profs']['Te_eV'][t_ind,:].T
+            )
+
+        ax[1,3].grid('on')
+        ax[1,3].set_xlabel('rho_pol (sq. pol. flux) [norm]')
+
+        if isinstance(t_plt, float):
+            ax[0,3].set_ylabel('ne [m^-3] (t=%1.2f s)'%(dout['exp']['profs']['time_s'][t_ind]))
+            ax[1,3].set_ylabel('Te [eV] (t=%1.2f s)'%(dout['exp']['profs']['time_s'][t_ind]))
+        elif isinstance(t_plt, list):
+            ax[0,3].set_ylabel('ne [m^-3] (t=%1.2f -%1.2f s)'%(t_plt[0], t_plt[1]))
+            ax[1,3].set_ylabel('Te [eV] (t=%1.2f -%1.2f s)'%(t_plt[0], t_plt[1]))
+
+    fig.suptitle(dout['shot'])
 
     fig.show()
         

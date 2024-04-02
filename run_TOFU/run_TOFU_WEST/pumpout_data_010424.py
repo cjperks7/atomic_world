@@ -29,12 +29,13 @@ dout = np.load(
     '/home/cjperks/2201_Pumpout/WEST/C9_results/shots/'
     +str(shot)+'_summary.npz',
     allow_pickle=True
-    )['dout']
+    )['dout'][()]
 
 dout = rtfw.get_west(
     dout = dout,
-    shot = shot,
+    quants = [],
     plt = True,
+    t_plt = [5.5,6.5],
     save = False,
     )
 
