@@ -13,9 +13,17 @@ import imas
 import imas_west
 import pywed as pw
 
+import numpy as np
+import matplotlib.pyplot as plt
+import sys, os
+
+plt.switch_backend('Qt5Agg')
+plt.ion()
+
 __all__ = [
     'get_west',
     'plt_west',
+    'save_west',
     ]
 
 ###############################################
@@ -28,8 +36,13 @@ def get_west(
     dout = None,
     shot = None,
     quants = None,
+    # Plotting controls
     plt = False,
     t_plt=None,
+    # Saving controls
+    save = True,
+    save_path = None,
+    save_name = None,
     ):
 
     # If empty, load in everything
@@ -41,6 +54,8 @@ def get_west(
             'ece',
             'icrf',
             'rad',
+            'xics',
+            'isotope_ratio',
             ]
 
     if dout is None:
@@ -60,7 +75,7 @@ def get_west(
 
     # Loads interferometry data
     if 'interf' in quants:
-        dout = _get_intef(
+        dout = _get_interf(
             dout = dout
             )
 
@@ -88,15 +103,46 @@ def get_west(
             dout=dout
             )
 
+    # Loads isotopic ratio
+    if 'isotope_ratio' in quants:
+        dout = _get_isotope(
+            dout=dout
+            )
+
     # Plotting
     if plt:
         plt_west(
-            dout=dout
+            dout=dout,
             t_plt=t_plt
+            )
+
+    # Saving
+    if save:
+        save_west(
+            dout=dout,
+            save_path=save_path,
+            save_name=save_name,
             )
 
     # Output
     return dout
+
+
+# Saves data to .npz
+def save_west(
+    dout=None,
+    save_path=None,
+    save_name=None,
+    ):
+
+    # Error check
+    if save_path is None:
+        save_path = os.getcwd()
+
+    # Saves data
+    path = os.path.join(save_path, save_name+'.npz')
+    np.savez(path, dout=dout)
+
 
 ##############################################
 #
@@ -110,7 +156,7 @@ def plt_west(
     nlvls = 30,
     ):
 
-    fig, ax = plt.subplot(2,2)
+    fig, ax = plt.subplots(2,2)
 
     # Plot interferomtry
     if 'interf' in dout['exp'].keys():
@@ -134,26 +180,39 @@ def plt_west(
         ax[0,1].set_xlabel('time [s]')
         ax[0,1].set_ylabel('Te [eV]')
 
+    # PLots H/H+D
+    if 'isotope' in dout['exp'].keys():
+        for spec in dout['exp']['isotope'].keys():
+            ax[0,2].plot(
+                dout['exp']['isotope'][spec]['time_s'],
+                dout['exp']['isotope'][spec]['H/H+D']*100,
+                label = spec
+                )
+
+        ax[0,2].set_xlabel('time [s]')
+        ax[0,2].set_ylabel('H/H+D [%]')
+        ax[0,2].legend()
+
     # Plots powers
     if 'icrf' in dout['exp'].keys():
         for ch in np.arange(dout['exp']['icrf']['time_s'].shape[1]):
-            ax[1,0].plot(
+            ax[1,1].plot(
                 dout['exp']['icrf']['time_s'][:,ch],
                 dout['exp']['icrf']['Prf_kW'][:,ch],
                 label = 'IC antenna %i'%(ch)
                 )
 
     if 'rad' in dout['exp'].keys():
-        ax[1,0].plot(
+        ax[1,1].plot(
             dout['exp']['rad']['time_s'],
             dout['exp']['rad']['Prad_tot_kW'],
             label = 'Radiated power'
             )
 
-    ax[1,0].grid('on')
-    ax[1,0].set_xlabel('time [s]')
-    ax[1,0].set_ylabel('power [kW]')
-    ax[1,0].legend()
+    ax[1,1].grid('on')
+    ax[1,1].set_xlabel('time [s]')
+    ax[1,1].set_ylabel('power [kW]')
+    ax[1,1].legend()
 
     # Plots equilibrium
     if 'eq' in dout['exp'].keys():
@@ -165,13 +224,21 @@ def plt_west(
                 t_plt - dout['exp']['eq']['time_s']
                 ))
 
+        # Plots stored energy
+        ax[1,2].plot(
+            dout['exp']['eq']['time_s'],
+            dout['exp']['eq']['Wmhd_kJ']
+            )
+        ax[1,2].set_xlabel('time [s]')
+        ax[1,2].set_ylabel('Wmhd [kJ]')
+
         lvls = np.linspace(
             np.nanmin(dout['exp']['eq']['psi_vals'][t_plt, ...]),
             np.nanmax(dout['exp']['eq']['psi_vals'][t_plt, ...]),
             nlvls
             )
 
-        ax[1,1].contour(
+        ax[1,0].contour(
             dout['exp']['eq']['psi_R'],
             dout['exp']['eq']['psi_Z'],
             np.squeeze(dout['exp']['eq']['psi_vals'][t_plt, ...]),
@@ -181,7 +248,7 @@ def plt_west(
             linewidths = 0.5
             )
 
-        ax[1,1].contour(
+        ax[1,0].contour(
             dout['exp']['eq']['psi_R'],
             dout['exp']['eq']['psi_Z'],
             np.squeeze(dout['exp']['eq']['psi_vals'][t_plt, ...]),
@@ -190,15 +257,17 @@ def plt_west(
             linestyles ='-',
             )
 
-        ax[1,1].plot(
+        ax[1,0].plot(
             dout['exp']['eq']['wall_R'],
             dout['exp']['eq']['wall_Z'],
             color='k'
             )
 
-        ax[1,1].grid('on')
-        ax[1,1].set_xlabel('R [m]')
-        ax[1,1].set_ylabel('Z [m]')
+        ax[1,0].grid('on')
+        ax[1,0].set_xlabel('R [m]')
+        ax[1,0].set_ylabel('Z [m]')
+
+    fig.show()
         
 
 
@@ -207,6 +276,32 @@ def plt_west(
 #               Utilities
 #
 ##############################################
+
+# Loads isotopic ratio
+def _get_isotope(
+    dout=None
+    ):
+
+    # Init
+    dout['exp']['isotope'] = {}
+    data = dout['exp']['isotope'] 
+
+    # Interferometry IDS
+    vis = imas_west.get(dout['shot'], 'spectrometer_visible') 
+
+    # Name of spectrometers
+    specs = ['LODIVOU15', 'INBUM04', 'LODIVIN19']
+
+    for ch in np.arange(len(vis.channel)):
+        if vis.channel[ch].name in specs:
+            data[vis.channel[ch].name] = {}
+            data[vis.channel[ch].name]['H/H+D'] = vis.channel[ch].isotope_ratios.isotope[0].density_ratio
+            data[vis.channel[ch].name]['time_s'] = vis.channel[ch].isotope_ratios.time - dout['t_ignitron']
+        else:
+            continue
+
+    # Output
+    return dout
 
 # Loads interferometry data
 def _get_interf(
@@ -311,7 +406,7 @@ def _get_icrf(
 
     # Loads launched RF power data
     data['time_s'] = np.zeros((ntime, nant)) # dim(ntime, nantenna)
-    data['Prf_W'] = np.zeros((ntime, nant)) # dim(ntime, nantenna)
+    data['Prf_kW'] = np.zeros((ntime, nant)) # dim(ntime, nantenna)
 
     for aa in np.arange(nant):
         data['time_s'][:,aa] = icrf.antenna[aa].power_launched.time - dout['t_ignitron']
@@ -380,6 +475,9 @@ def _get_eq(
         + equi.interp2D.b_field_z**2
         + equi.interp2D.b_field_tor**2
         ) # dim(ntime, nR, nZ)
+
+    # Stored energy
+    data['Wmhd_kJ'] = equi.global_quantities.w_mhd/1e3
 
     # Output
     return dout
