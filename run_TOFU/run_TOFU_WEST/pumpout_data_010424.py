@@ -28,7 +28,7 @@ scp CP028959@altair.partenaires.cea.fr:/home/CP028959/work/pumpout/shots/59984_s
 from atomic_world.run_TOFU import run_TOFU_WEST as rtfw
 import numpy as np
 
-shot0 = 60002
+shot0 = 59972
 shot1 = 60002
 
 for shot in np.arange(shot0, shot1+1):
@@ -36,8 +36,9 @@ for shot in np.arange(shot0, shot1+1):
         shot = shot,
         plt = False,
         save = True,
-        save_path = '/home/CP028959/work/pumpout/shots',
-        save_name = str(shot)+'_summary'
+        quants = ['xics'],
+        save_path = '/home/CP028959/work/pumpout/XICS',
+        save_name = str(shot)+'_raw'
         )
 
 

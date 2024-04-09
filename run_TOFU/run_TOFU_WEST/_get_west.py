@@ -60,7 +60,7 @@ def get_west(
             'icrf',
             'rad',
             'ohm',
-            'xics',
+            #'xics',
             'isotope_ratio',
             'Zeff',
             ]
@@ -73,6 +73,13 @@ def get_west(
 
         # Start time
         dout['t_ignitron'] = pw.tsmat(dout['shot'], 'IGNITRON|1')
+
+    # Loads XICS data
+    if 'xics' in quants:
+        dout = _get_xics(
+            dout=dout,
+            source = 'imas_west'
+            )
 
     # Loads equilibrium data
     if 'eq' in quants:
@@ -635,7 +642,7 @@ def _get_zeff(
     dout = None
     ):
 
-     # Init
+    # Init
     dout['exp']['vis_brem'] = {}
     data = dout['exp']['vis_brem']
 
@@ -658,6 +665,67 @@ def _get_zeff(
         data['time_s'][:,ch] = vis.channel[ch].zeff_line_average.time - dout['t_ignitron']
 
         data['Zeff'][:,ch] = vis.channel[ch].zeff_line_average.data
+
+    # Output
+    return dout
+
+# Loads XICS data
+def _get_xics(
+    dout=None,
+    source = None, # 'imas_west' or 'tofu_west
+    ):
+
+    # Init
+    dout['exp']['xics'] = {}
+    data = dout['exp']['xics']
+
+    # Loads data from tofu_west
+    if source == 'tofu_west':
+        print('NOT IMPLEMENTED YET!!')
+        sys.exit(1)
+
+        xics = tfw.SpectroX2D.load_data(dout['shot'], plot=False)
+
+        # Time basis
+        data['time_s'] = xics[0].ddata['t'] # dim(ntime,)
+
+        data['raw'] = xics[0].ddata['data'] # dim(ntime, nxi*nxj)
+
+
+    # Loads data from imas
+    elif source == 'imas_west':
+        xics = imas_west.get(dout['shot'], 'spectrometer_x_ray_crystal')
+
+        # Time basis
+        data['time_s'] = xics.time - dout['t_ignitron'] # dim(ntime,)
+
+        # Line-integrated temperatures
+        data['Ti_line_eV'] = xics.channel[0].profiles_line_integrated.t_i.data # dim(ntime,nchord)
+        data['Te_line_eV'] = xics.channel[0].profiles_line_integrated.t_e.data # dim(ntime,nchord)
+
+        # Radial coor
+        data['rho_t'] = xics.channel[0].profiles_line_integrated.lines_of_sight_rho_tor_norm.data # dim(ntime,nchord)
+
+        # LOS coordinate
+        data['r1'] = xics.channel[0].camera.line_of_sight.first_point.r # dim(1, nchord)
+        data['phi1'] = xics.channel[0].camera.line_of_sight.first_point.phi # dim(1, nchord)
+        data['z1'] = xics.channel[0].camera.line_of_sight.first_point.z # dim(1, nchord)
+        data['r2'] = xics.channel[0].camera.line_of_sight.second_point.r # dim(1, nchord)
+        data['phi2'] = xics.channel[0].camera.line_of_sight.second_point.phi # dim(1, nchord)
+        data['z2'] = xics.channel[0].camera.line_of_sight.second_point.z # dim(1, nchord)
+
+        # Camera properties
+        data['camdim'] = xics.channel[0].camera.camera_dimensions # dim(horz, vert)
+        data['pixdim'] = xics.channel[0].camera.pixel_dimensions # dim(horz, vert)
+        data['nxi'] = int(data['camdim'][0]/ data['pixdim'][0]) # (horz)
+        data['nxj'] = int(data['camdim'][1]/ data['pixdim'][1]) # (horz)
+
+        # Raw data
+        nframe = len(xics.channel[0].frame)
+        data['raw'] = np.full((nframe, data['nxj'], data['nxi']), np.nan)
+
+        for ii in range(nframe):
+            data['raw'][ii,:,:] = xics.channel[0].frame[ii].counts_n
 
     # Output
     return dout
