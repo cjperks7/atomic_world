@@ -12,7 +12,7 @@ April 1, 2024
 from atomic_world.run_TOFU import run_TOFU_WEST as rtfw
 
 # Shot #
-shot =59984
+shot =59972
 
 dout = rtfw.get_west(
     shot = shot,
@@ -24,6 +24,22 @@ dout = rtfw.get_west(
 
 '''
 scp CP028959@altair.partenaires.cea.fr:/home/CP028959/work/pumpout/shots/59984_summary.npz .
+
+from atomic_world.run_TOFU import run_TOFU_WEST as rtfw
+import numpy as np
+
+shot0 = 60002
+shot1 = 60002
+
+for shot in np.arange(shot0, shot1+1):
+    dout = rtfw.get_west(
+        shot = shot,
+        plt = False,
+        save = True,
+        save_path = '/home/CP028959/work/pumpout/shots',
+        save_name = str(shot)+'_summary'
+        )
+
 
 # Plots loaded 
 dout = np.load(

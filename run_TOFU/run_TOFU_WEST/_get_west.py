@@ -62,6 +62,7 @@ def get_west(
             'ohm',
             'xics',
             'isotope_ratio',
+            'Zeff',
             ]
 
     if dout is None:
@@ -118,6 +119,12 @@ def get_west(
     # Loads isotopic ratio
     if 'isotope_ratio' in quants:
         dout = _get_isotope(
+            dout=dout
+            )
+
+    # Loads Zeff from visible bremsstrahlung
+    if 'Zeff' in quants:
+        dout = _get_zeff(
             dout=dout
             )
 
@@ -238,7 +245,9 @@ def plt_west(
             ax[1,1].plot(
                 dout['exp']['icrf']['time_s'][:,ch],
                 dout['exp']['icrf']['Prf_kW'][:,ch],
-                label = 'IC antenna %i'%(ch)
+                label = 'IC antenna %i, %0.1f MHz'%(
+                    ch, dout['exp']['icrf']['freq_MHz'][ch]
+                    )
                 )
 
     if 'rad' in dout['exp'].keys():
@@ -280,12 +289,21 @@ def plt_west(
         # Plots stored energy
         ax[1,2].plot(
             dout['exp']['eq']['time_s'],
-            dout['exp']['eq']['Wmhd_kJ']
+            dout['exp']['eq']['Wmhd_kJ'],
+            color = 'blue'
             )
         ax[1,2].set_xlabel('time [s]')
-        ax[1,2].set_ylabel('Wmhd [kJ]')
+        ax[1,2].set_ylabel('Wmhd [kJ]', color='blue')
         ax[1,2].grid('on')
         ax[1,2].set_xlim(0,10)
+
+        ax2 = ax[1,2].twinx()
+        ax2.plot(
+            dout['exp']['eq']['time_s'],
+            abs(dout['exp']['eq']['Ip_kA']),
+            color = 'red'
+            )
+        ax2.set_ylabel('Ip [kA]', color='red')
 
         lvls = np.linspace(
             np.nanmin(dout['exp']['eq']['psi_vals'][t_ind, ...]),
@@ -422,7 +440,8 @@ def _get_interf(
     # Loads line-integrated interferometry data
     data['ne_m2'] = np.zeros((len(data['time_s']), nch_int)) # dim(ntime, nch)
     for ch in np.arange(nch_int):
-        data['ne_m2'][:,ch] = interf.channel[ch].n_e_line.data # [m^-2]
+        if len(interf.channel[ch].n_e_line.data) > 0:
+            data['ne_m2'][:,ch] = interf.channel[ch].n_e_line.data # [m^-2]
 
     # Output
     return dout
@@ -468,6 +487,10 @@ def _get_profs(
     # Time basis
     data['time_s'] = corep.time - dout['t_ignitron'] 
 
+    # Error check
+    if len(corep.profiles_1d) == 0:
+        return dout
+
     # Radial basis
     nrho = len(corep.profiles_1d[-1].grid.rho_pol_norm)
 
@@ -505,11 +528,14 @@ def _get_icrf(
     # Loads launched RF power data
     data['time_s'] = np.zeros((ntime, nant)) # dim(ntime, nantenna)
     data['Prf_kW'] = np.zeros((ntime, nant)) # dim(ntime, nantenna)
+    data['freq_MHz'] = np.zeros(nant) # dim(nantenna,)
 
     for aa in np.arange(nant):
         data['time_s'][:,aa] = icrf.antenna[aa].power_launched.time - dout['t_ignitron']
 
         data['Prf_kW'][:,aa] = icrf.antenna[aa].power_launched.data/1e3
+
+        data['freq_MHz'][aa] = np.mean(icrf.antenna[aa].frequency.data)/1e6
 
     # Output
     return dout
@@ -597,6 +623,41 @@ def _get_eq(
 
     # Stored energy
     data['Wmhd_kJ'] = equi.global_quantities.w_mhd/1e3
+
+    # Plasma current
+    data['Ip_kA'] = equi.global_quantities.ip/1e3
+
+    # Output
+    return dout
+
+# Gets Zeff from visible bremsstrahlung
+def _get_zeff(
+    dout = None
+    ):
+
+     # Init
+    dout['exp']['vis_brem'] = {}
+    data = dout['exp']['vis_brem']
+
+    # Equilibrium IDS
+    vis = imas_west.get(dout['shot'], 'bremsstrahlung_visible', 0,1)
+
+    # Error check
+    if len(vis.channel) == 0:
+        return dout
+
+    # Number of antennas
+    nch = len(vis.channel)
+    ntime = len(vis.channel[0].zeff_line_average.time)
+
+    # Loads launched RF power data
+    data['time_s'] = np.zeros((ntime, nch)) # dim(ntime, nchannels)
+    data['Zeff'] = np.zeros((ntime, nch)) # dim(ntime, nchannels)
+
+    for ch in np.arange(nch):
+        data['time_s'][:,ch] = vis.channel[ch].zeff_line_average.time - dout['t_ignitron']
+
+        data['Zeff'][:,ch] = vis.channel[ch].zeff_line_average.data
 
     # Output
     return dout
