@@ -196,7 +196,7 @@ def plt_west(
         ax[0,0].set_xlim(0,10)
 
     # Plots ECE
-    if 'ece' in dout['exp'].keys():
+    if 'ece' in dout['exp'].keys() and len(dout['exp']['ece']['Te_eV']) > 1:
         ax[0,1].plot(
             dout['exp']['ece']['time_s'],
             dout['exp']['ece']['Te_eV']
@@ -341,7 +341,7 @@ def plt_west(
         ax[1,0].set_ylabel('Z [m] (t=%1.2f s)'%(dout['exp']['eq']['time_s'][t_ind]))
 
     # Plots fitted profiles
-    if 'profs' in dout['exp'].keys():
+    if 'profs' in dout['exp'].keys() and 'rho_p' in dout['exp']['profs'].keys():
         if t_plt is None:
             t_ind = int(len(dout['exp']['profs']['time_s'])/2)
 
