@@ -43,8 +43,8 @@ for shot in np.arange(shot0, shot1+1):
 
 
 from atomic_world.run_TOFU import run_TOFU_WEST as rtfw
-shot = 59999
-shot = 60002
+#shot = 59995
+shot = 60001
 
 # Plots loaded 
 dout = np.load(
@@ -57,7 +57,7 @@ dout = rtfw.get_west(
     dout = dout,
     quants = [],
     plt = True,
-    t_plt = [5.5,6.0],
+    t_plt = [4.5,5.5],
     save = False,
     )
 
