@@ -34,7 +34,7 @@ def calc_He(
     out = {}
 
     # Loop over physics
-    for pp in inclu_physics:
+    for pp in incl_physics:
         # Collisional excitation
         if pp == 'ex':
             out['ex'] = {}
