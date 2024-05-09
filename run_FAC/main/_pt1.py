@@ -61,9 +61,10 @@ def rates(
     save_path=None,     # path/to/save
     # Configuration Settings
     nele=1,             # Number of electrons
-    nmax=2,             # Maximum excitation quantum number
-    n_spec_min=10,      # Minimum spectator electron quantum number
-    n_spec_max=11,      # Maximum spectator electron quantum number
+    settings = None,    # Dictionary of modeling settings
+    #nmax=2,             # Maximum excitation quantum number
+    #n_spec_min=10,      # Minimum spectator electron quantum number
+    #n_spec_max=11,      # Maximum spectator electron quantum number
     # Physics Contols
     physics=None,       # If None -> include all
     ):
@@ -79,22 +80,24 @@ def rates(
 
     # Physics to include
     if physics is None:
-        physics = ['tr', 'ce', 'rr', 'ci', 'ai']
+        physics = ['en', 'tr', 'ce', 'rr', 'ci', 'ai']
 
     # Calculates energy levels
     groups = _states(
         name=name,
         nele=nele,
-        nmax=nmax,
+        #nmax=nmax,
+        settings=settings,
         )
 
     # Calculates energy levels
-    _en(
-        name=name,
-        groups=groups,
-        n_spec_min=n_spec_min,
-        n_spec_max=n_spec_max,
-        )
+    if 'en' in physics:
+        _en(
+            name=name,
+            groups=groups,
+            n_spec_min=n_spec_min,
+            n_spec_max=n_spec_max,
+            )
 
     # Calculates radiative transition rates
     if 'tr' in physics:
@@ -145,10 +148,10 @@ def rates(
     fac.MemENTable(name+'b.en')
 
     # Calculates Maxwellian-averaged rate coefficients
-    temps = list(np.logspace(np.log10(8.62e0), np.log10(8.62e4), 41))
-    fac.MaxwellRate(name+'b.ce', name+'ce.mr', -1, -1, temp)
-    fac.MaxwellRate(name+'b.rr', name+'rr.mr', -1, -1, temp)
-    fac.MaxwellRate(name+'b.ci', name+'ci.mr', -1, -1, temp)
+    #temps = list(np.logspace(np.log10(8.62e0), np.log10(8.62e4), 41))
+    #fac.MaxwellRate(name+'b.ce', name+'ce.mr', -1, -1, temp)
+    #fac.MaxwellRate(name+'b.rr', name+'rr.mr', -1, -1, temp)
+    #fac.MaxwellRate(name+'b.ci', name+'ci.mr', -1, -1, temp)
 
     # Converts binary file to ASCII
     #   Optional arg: v=1 -> verbose
@@ -169,7 +172,8 @@ def rates(
 def _states(
     name=None,
     nele=None,
-    nmax=None,
+    #nmax=None,
+    settings=None,
     ):
 
     print('Generating states of interest')
@@ -182,6 +186,7 @@ def _states(
 
     # Loop over group types
     for typ in groups.keys():
+        print(typ)
         # If n=1 shell is unfilled
         if nele < 3:
             # Filling the n=1 shell
@@ -198,12 +203,14 @@ def _states(
         if typ == 'grd':
             # Defines ground state
             groups[typ].append('grd.1')
-            fac.Config(groups[typ][-1], struct)
+            #fac.Config(groups[typ][-1], struct)
+            print(struct)
 
         # If considering an excited state
         elif typ == 'exc':
+            # --- Singly excited states --- #
             # Loop over excitation quantum numbers
-            for nn in range(nmin,nmax+1):
+            for nn in range(nmin,settings['single']['n_max']+1):
                 if nele == 1 or nele == 3:
                     # Bringing an electron from ground to the n=nn shell
                     tmp = struct[:-3]
@@ -219,10 +226,77 @@ def _states(
 
                 # Defines this excited state
                 groups[typ].append('exc.%d'%(nn))
-                fac.Config(groups[typ][-1], tmp)
+                #fac.Config(groups[typ][-1], tmp)
+                print(tmp)
+
+            # --- Doubly excited states --- #
+            if 'double' in settings.keys() and nele >1:
+                # Loop over the lower excited electron
+                for nn1 in range(
+                    settings['double']['n1_min'],
+                    settings['double']['n1_max']+1
+                    ):
+                    # Loop over the higher excited electron
+                    for nn2 in range(
+                        settings['double']['n2_min'],
+                        settings['double']['n2_max']+1
+                        ):
+
+                        # If looking at innershell excitation
+                        if nn1 <= nmin:
+                            bb = [int(xx[0]) for xx in struct.split(' ')]
+                            ee = [int(xx[-1]) for xx in struct.split(' ')]
+                            ind = np.where(nn1 in bb)[0][0]
+
+                            # Promotes innershell electron
+                            tmp = ''
+                            for ii,nn in enumerate(range(1,nmin)):
+                                if ii < ind:
+                                    tmp += str(bb[ii])+'*'+str(ee[ii])+' '
+
+                                elif ii == ind:
+                                    tmp += str(bb[ii])+'*'+str(ee[ii]-1)+' '
+
+                                elif ii > ind:
+                                    tmp += str(bb[ii])+'*'+str(ee[ii]+1)+' '
+                            tmp = tmp[:-1]
+
+                        else:
+                            if nele == 1 or nele == 3:
+                                # Bringing an electron from ground to the n=nn shell
+                                tmp = struct[:-4]
+
+                            else:
+                                # Bringing an electron from ground to the n=nn shell
+                                tmp = struct[:-1]
+                                tmp += str(int(struct[-1])-1)
+                                tmp += ' '
+                            tmp += str(nn1)+'*1'
+
+                        # Adds second excited electron
+                        if nn2 == nn1:
+                            tmp2 = tmp
+                        elif nn2 > nn1:
+                            tmp2 = tmp[:-1]
+                            tmp2 += str(int(tmp[-1])-1)
+                            tmp2 += ' %i*1'%(nn2)
+
+                        # Error check
+                        elif nn2 < nn1:
+                            continue
+
+                        # Defines this excited state
+                        groups[typ].append('exc.%d.%d'%(nn1, nn2))
+                        #fac.Config(groups[typ][-1], tmp2)
+                        print(tmp2)
 
         # If considering an ionized state
         elif typ == 'ion':
+            if nele <= 3:
+                ni_min = 1
+            elif nele <=11:
+                ni_min = 2
+
             if nele == 1 or nele == 3:
                 # Removing an electron from ground
                 tmp = struct[:-4]
@@ -232,20 +306,101 @@ def _states(
                 tmp = struct[:-1]
                 tmp += str(int(struct[-1])-1)
 
-            # Defines this ionized state
-            groups[typ].append('ion.0')
-            fac.Config(groups[typ][-1], tmp)
+            # --- Outershell excitation --- #
+            for nni in range(ni_min, settings['ioniz']['n_outer_max']+1):
+                if nni == int(ni_min):
+                    tmpi = tmp
+
+                else:
+                    if int(tmp[-1])-1 >0:
+                        tmpi = tmp[:-1]
+                        tmpi += str(int(tmp[-1])-1)
+                    else:
+                        tmpi = tmp[:-4]
+                    tmpi += ' %i*1'%(nni)
+
+                # Defines this ionized state
+                print('outer')
+                groups[typ].append('ion.%d'%(nni))
+                #fac.Config(groups[typ][-1], tmp)
+                print(tmpi)
+
+            # --- Innershell excitation --- #
+            for inn in settings['ioniz']['n_inner']:
+                bb = [int(xx[0]) for xx in tmp.split(' ')]
+                ee = [int(xx[-1]) for xx in tmp.split(' ')]
+                ind = np.where(int(inn) in bb)[0][0]
+
+                for nni in range(inn+1, settings['ioniz']['n_inner_max']+1):
+                    print(nni)
+                    tmpi = ''
+                    for ii in range(len(ee)):
+                        if ii < ind:
+                            tmpi += str(bb[ii])+'*'+str(ee[ii])+' '
+                        elif ii == ind:
+                                tmpi += str(bb[ii])+'*'+str(ee[ii]-1)+' '
+
+                        elif ii > ind:
+                            if nni <= ee[-1]:
+                                tmpi += str(bb[ii])+'*'+str(ee[ii]+1)+' '
+                            else:
+                                tmpi += str(bb[ii])+'*'+str(ee[ii])+' '
+
+
+                    # Defines this ionized state
+                    groups[typ].append('ion.%d'%(nni))
+                    #fac.Config(groups[typ][-1], tmp)
+                    print('inner')
+                    print(tmpi)
+                '''
+                if nele == 1 or nele == 3:
+                    # Removing an electron from ground
+                    tmp = struct[:-4]
+
+                else:
+                    # Removing an electron from ground
+                    tmp = struct[:-1]
+                    tmp += str(int(struct[-1])-1)
+
+                for nni in range(int(ni_min), settings['ioniz']['n_max']+1):
+                    if nni == int(ni_min):
+                        tmpi = tmp
+
+                    else:
+                    if nele == 2 or nele == 4:
+                        bb = [int(xx[0]) for xx in tmp.split(' ')]
+                        ee = [int(xx[-1]) for xx in tmp.split(' ')]
+                        ind = np.where(int(nni-1) in bb)[0][0]
+
+                        # Promotes innershell electron
+                        tmpi = ''
+                        for ii,nn in enumerate(range(1,int(nni))):
+                            if ii < ind:
+                                tmpi += str(bb[ii])+'*'+str(ee[ii])+' '
+
+                            elif ii == ind:
+                                tmpi += str(bb[ii])+'*'+str(ee[ii]-1)+' '
+
+                            elif ii > ind:
+                                tmpi += str(bb[ii])+'*'+str(ee[ii]+1)+' '
+                        tmpi = tmpi[:-1]
+                    else:
+                        tmpi = tmp[:-1]
+                        tmpi += str(int(tmp[-1])-1)
+                        tmpi += ' %i*1'%(int(nni+1))
+                '''
+
 
     # Stores configurations
-    fac.ListConfig()
-    fac.ListConfig(name+'a.cfg')
+    #fac.ListConfig()
+    #fac.ListConfig(name+'a.cfg')
     
     # Optimizes the radial potential
     #   Purpose of this routine is to remove some error in energy level calcs
     #   due to using a single central potential for all configurations
-    fac.ConfigEnergy(0)         # Calculates the average energy of configurations
-    fac.OptimizeRadial(['grd.1']) # Obtaines optimal radial potential for list of cofigs
-    fac.ConfigEnergy(1)         # Recalculates average energy after optimized potential
+    #fac.ConfigEnergy(0)         # Calculates the average energy of configurations
+    #fac.OptimizeRadial(['grd.1']) # Obtaines optimal radial potential for list of cofigs
+    #fac.ConfigEnergy(1)         # Recalculates average energy after optimized potential
 
     # Output
     return groups
