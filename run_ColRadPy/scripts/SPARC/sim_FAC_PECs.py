@@ -12,6 +12,7 @@ Feb 20, 2024
 # Modules
 import sys, os
 from colradpy import colradpy
+import numpy as np
 
 # Ion
 sp = 'Ar'
@@ -20,7 +21,7 @@ Znuc = 18
 
 # Common FAC atomic data files name
 file = os.path.join(
-    '/home/cjperks/2008_SPARCxray',
+    '/home/cjperks/work/2008_SPARCxray',
     #'FAC/ATOM',
     #sp,
     'FAC/ATOM_editted_v1',
