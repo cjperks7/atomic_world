@@ -56,7 +56,8 @@ def _states(
                     config = settings['grd'],
                     typ = typ,
                     groups = groups,
-                    fac = fac
+                    fac = fac,
+                    restrict = settings['restrictions'],
                     )
 
         # If considering an excited state
@@ -94,7 +95,8 @@ def _states(
                         typ = typ,
                         groups = groups,
                         fac = fac,
-                        long = True
+                        long = True,
+                        restrict = settings['restrictions'],
                         )
 
             # ---- Double excited electrons --- #
@@ -143,6 +145,7 @@ def _states(
                             fac = fac,
                             double = True,
                             long = True,
+                            restrict = settings['restrictions'],
                             )
 
         # If considering an ionized state
@@ -157,12 +160,6 @@ def _states(
                 # Deletes electron to excite
                 tmp[str(nd)][grd_ind] -= 1
 
-                if nele >=11:
-                    #restrict = ';3d<1'
-                    restrict = ''
-                else:
-                    restrict = ''
-
                 # Builds ground state
                 groups = _build_state(
                     ind = grd_ind,
@@ -171,7 +168,7 @@ def _states(
                     typ = typ,
                     groups = groups,
                     fac = fac,
-                    restrict = restrict
+                    restrict = settings['restrictions'],
                     )
 
     print(groups)
@@ -294,7 +291,7 @@ def _build_state(
     fac = None,
     double = False,
     long = False,
-    restrict = '',
+    restrict = None,
     ):
 
     # Init structure string
@@ -308,7 +305,7 @@ def _build_state(
     struct = struct[:-1]
 
     # Includes restrictions
-    struct += restrict
+    struct += _add_restrict(config=config, restrict=restrict)
 
     # Defines ground state
     if long:
@@ -330,4 +327,46 @@ def _build_state(
     return groups
 
 
+# Add level restrictions
+def _add_restrict(
+    config = None,
+    restrict = None,
+    ):
 
+    # Init
+    out = ''
+
+    # Orbitals
+    orb = {
+        '0': 's',
+        '1': 'p',
+        '2': 'd',
+        '3': 'f',
+        '4': 'g',
+        '5': 'h',
+        '6': 'i',
+        '7': 'k',
+        '8': 'l',
+        '9': 'm',
+        '10': 'n'
+        }
+
+    # If don't add any
+    if restrict is None:
+        return out
+
+    elif 'l_max' in restrict.keys():
+
+        # Loop over principal quantum number
+        for nn in config.keys():
+            if int(nn) > restrict['l_max']:
+                for ii in range(restrict['l_max'], int(nn)):
+                    out += (
+                        ';'
+                        + str(nn)
+                        + orb[str(ii)]
+                        + '<1'
+                        )
+
+    # Output
+    return out
