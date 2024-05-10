@@ -10,13 +10,17 @@ Dec 20th, 2023
 '''
 
 # Modules
-from pfac import atom
 import sys, os
 from datetime import date
 
 nele = int(sys.argv[1])
 sp = sys.argv[2]
 fol = sys.argv[3]
+
+if nele == 1:
+    from pfac import atom
+else:
+    from pfac import atom_editted as atom
 
 # Prints console stdout to file
 sys.stdout = open(
