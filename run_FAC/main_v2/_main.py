@@ -216,7 +216,8 @@ def _def(key=None):
                 'n_spec_min': 11,    # Minimum quantum number of spectator
                 'n_spec_max': 25,    # Maximum quantum number of spectator
                 'n_ext': 45,      # Highly excited state if desired
-                }
+                },
+            'restrictions': None,
             },
 
         '2':{
@@ -227,12 +228,12 @@ def _def(key=None):
                 'grd_ind': 0,       # Index of grd state base off of
                 'n_raise': [1],   # List of electrons to excite
                 'n_min': [2],     # Minimum quantum number to excite to
-                'n_max': [8]      # Maximum quantum number to excite to
+                'n_max': [10]      # Maximum quantum number to excite to
                 },
             'double':{              # --- Two excited electrons --- #
                 'n_raise': [[1,1]],
                 'n_min': [[2,2]],
-                'n_max': [[3,6]]
+                'n_max': [[3,10]]
                 },
             'ion':{                 # --- Ionized state ---- #
                 'n_remove': [1]   # List of quantum numbers to remove an electron
@@ -241,10 +242,11 @@ def _def(key=None):
                 'ion_ind': 0,       # Ionized state to base spectators off of
                 'rec_pw_max': 5,    # Maximum orbital angular momentum
                 'n_frozen': 9,      # n>n_frozen uses frozen core approximation
-                'n_spec_min': 9,    # Minimum quantum number of spectator
+                'n_spec_min': 10,    # Minimum quantum number of spectator
                 'n_spec_max': 9,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': None,
             },
 
 
@@ -257,12 +259,12 @@ def _def(key=None):
                 'grd_ind': 0,       # Index of grd state base off of
                 'n_raise': [2,1],   # List of electrons to excite
                 'n_min': [3,2],     # Minimum quantum number to excite to
-                'n_max': [8,5]      # Maximum quantum number to excite to
+                'n_max': [10,9]      # Maximum quantum number to excite to
                 },
             'double':{              # --- Two excited electrons --- #
                 'n_raise': [[1,2]],
                 'n_min': [[3,3]],
-                'n_max': [[3,5]]
+                'n_max': [[3,7]]
                 },
             'ion':{                 # --- Ionized state ---- #
                 'n_remove': [2,1]   # List of quantum numbers to remove an electron
@@ -271,10 +273,11 @@ def _def(key=None):
                 'ion_ind': 0,       # Ionized state to base spectators off of
                 'rec_pw_max': 5,    # Maximum orbital angular momentum
                 'n_frozen': 9,      # n>n_frozen uses frozen core approximation
-                'n_spec_min': 9,    # Minimum quantum number of spectator
+                'n_spec_min': 10,    # Minimum quantum number of spectator
                 'n_spec_max': 9,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': None,
             },
 
         '4':{
@@ -289,7 +292,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [6,2]
+                'n_max': [8,6]
                 },
             'double':{              # --- Two excited electrons --- #
                 'n_raise': [[1,2], [2,2]],
@@ -303,10 +306,13 @@ def _def(key=None):
                 'ion_ind': 0,       # Ionized state to base spectators off of
                 'rec_pw_max': 5,    # Maximum orbital angular momentum
                 'n_frozen': 7,      # n>n_frozen uses frozen core approximation
-                'n_spec_min': 7,    # Minimum quantum number of spectator
+                'n_spec_min': 8,    # Minimum quantum number of spectator
                 'n_spec_max': 7,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 9
+                },
             },
         
         '5':{
@@ -321,39 +327,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [5,2]
-                },
-            'double':{              # --- Two excited electrons --- #
-                'n_raise': [[2,2]],
-                'n_min': [[3,3]],
-                'n_max': [[3,3]]
-                },
-            'ion':{                 # --- Ionized state ---- #
-                'n_remove': [2]   # List of quantum numbers to remove an electron
-                },
-            'spectator':{           # --- Highly excited (spectator) settings --- #
-                'ion_ind': 0,       # Ionized state to base spectators off of
-                'rec_pw_max': 4,    # Maximum orbital angular momentum
-                'n_frozen': 6,      # n>n_frozen uses frozen core approximation
-                'n_spec_min': 6,    # Minimum quantum number of spectator
-                'n_spec_max': 6,    # Maximum quantum number of spectator
-                'n_ext': None,      # Highly excited state if desired
-                }
-            },
-
-        '6':{
-            'grd':{                 # Number of electrons in each quantum number at ground
-                '1': [2],
-                '2': [4]
-                },
-            'single':{              # --- Single excited electron --- # 
-                'grd_ind': 0,       # Index of grd state base off of
-                #'n_raise': [2,1],   # List of electrons to excite
-                #'n_min': [3,2],     # Minimum quantum number to excite to
-                #'n_max': [5,4]      # Maximum quantum number to excite to
-                'n_raise': [2],
-                'n_min': [3],
-                'n_max': [5]
+                'n_max': [9,4]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -373,7 +347,48 @@ def _def(key=None):
                 'n_spec_min': 7,    # Minimum quantum number of spectator
                 'n_spec_max': 6,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 5
+                },
+            },
+
+        '6':{
+            'grd':{                 # Number of electrons in each quantum number at ground
+                '1': [2],
+                '2': [4]
+                },
+            'single':{              # --- Single excited electron --- # 
+                'grd_ind': 0,       # Index of grd state base off of
+                #'n_raise': [2,1],   # List of electrons to excite
+                #'n_min': [3,2],     # Minimum quantum number to excite to
+                #'n_max': [5,4]      # Maximum quantum number to excite to
+                'n_raise': [2,1],
+                'n_min': [3,2],
+                'n_max': [7,3]
+                },
+            'double':{              # --- Two excited electrons --- #
+                #'n_raise': [[2,2]],
+                #'n_min': [[3,3]],
+                #'n_max': [[3,3]]
+                'n_raise': [],
+                'n_min': [],
+                'n_max': []
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'n_remove': [2]   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 4,    # Maximum orbital angular momentum
+                'n_frozen': 6,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 7,    # Minimum quantum number of spectator
+                'n_spec_max': 6,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'l_max': 5
+                },
             },
 
         '7':{
@@ -386,9 +401,9 @@ def _def(key=None):
                 #'n_raise': [2,1],   # List of electrons to excite
                 #'n_min': [3,2],     # Minimum quantum number to excite to
                 #'n_max': [5,4]      # Maximum quantum number to excite to
-                'n_raise': [2],
-                'n_min': [3],
-                'n_max': [4]
+                'n_raise': [2,1],
+                'n_min': [3,2],
+                'n_max': [7,3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -405,10 +420,13 @@ def _def(key=None):
                 'ion_ind': 0,       # Ionized state to base spectators off of
                 'rec_pw_max': 3,    # Maximum orbital angular momentum
                 'n_frozen': 5,      # n>n_frozen uses frozen core approximation
-                'n_spec_min': 5,    # Minimum quantum number of spectator
+                'n_spec_min': 6,    # Minimum quantum number of spectator
                 'n_spec_max': 5,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 4
+                },
             },
 
         '8':{
@@ -423,7 +441,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [5,2]
+                'n_max': [8,3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -443,7 +461,10 @@ def _def(key=None):
                 'n_spec_min': 8,    # Minimum quantum number of spectator
                 'n_spec_max': 7,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 5
+                },
             },
 
         '9':{
@@ -458,7 +479,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [6,4]
+                'n_max': [10,5]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -478,7 +499,10 @@ def _def(key=None):
                 'n_spec_min': 8,    # Minimum quantum number of spectator
                 'n_spec_max': 7,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 7
+                },
             },
 
         '10':{
@@ -493,7 +517,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,3],
-                'n_max': [6,4]
+                'n_max': [10,10]
                 },
             'double':{              # --- Two excited electrons --- #
                 'n_raise': [[2,2]],
@@ -513,7 +537,10 @@ def _def(key=None):
                 'n_spec_min': 8,    # Minimum quantum number of spectator
                 'n_spec_max': 7,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 10
+                },
             },
 
         '11':{
@@ -527,17 +554,17 @@ def _def(key=None):
                 #'n_raise': [2,1],   # List of electrons to excite
                 #'n_min': [3,2],     # Minimum quantum number to excite to
                 #'n_max': [5,4]      # Maximum quantum number to excite to
-                'n_raise': [3,2,2],
-                'n_min': [4,3,9],
-                'n_max': [6,4,9]
+                'n_raise': [3,2],
+                'n_min': [4,3],
+                'n_max': [10,6]
                 },
             'double':{              # --- Two excited electrons --- #
-                'n_raise': [[2,3]],
-                'n_min': [[4,5]],
-                'n_max': [[4,6]]
-                #'n_raise': [],
-                #'n_min': [],
-                #'n_max': []
+                #'n_raise': [[2,3]],
+                #'n_min': [[4,5]],
+                #'n_max': [[4,5]]
+                'n_raise': [],
+                'n_min': [],
+                'n_max': []
                 },
             'ion':{                 # --- Ionized state ---- #
                 'n_remove': [3]   # List of quantum numbers to remove an electron
@@ -551,7 +578,7 @@ def _def(key=None):
                 'n_ext': None,      # Highly excited state if desired
                 },
             'restrictions':{
-                'l_max': 3
+                'l_max': 4
                 },
             },
 
@@ -568,7 +595,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [3,2],
                 'n_min': [4,3],
-                'n_max': [4,3]
+                'n_max': [10,3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -588,7 +615,10 @@ def _def(key=None):
                 'n_spec_min': 8,    # Minimum quantum number of spectator
                 'n_spec_max': 7,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 7
+                },
             },
 
         '13':{
@@ -604,7 +634,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [3],
                 'n_min': [4],
-                'n_max': [4]
+                'n_max': [8]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -624,7 +654,88 @@ def _def(key=None):
                 'n_spec_min': 8,    # Minimum quantum number of spectator
                 'n_spec_max': 7,    # Maximum quantum number of spectator
                 'n_ext': None,      # Highly excited state if desired
-                }
+                },
+            'restrictions': {
+                'l_max': 3
+                },
+            },
+
+        '14':{
+            'grd':{                 # Number of electrons in each quantum number at ground
+                '1': [2],
+                '2': [8],
+                '3': [4]
+                },
+            'single':{              # --- Single excited electron --- # 
+                'grd_ind': 0,       # Index of grd state base off of
+                #'n_raise': [2,1],   # List of electrons to excite
+                #'n_min': [3,2],     # Minimum quantum number to excite to
+                #'n_max': [5,4]      # Maximum quantum number to excite to
+                'n_raise': [3],
+                'n_min': [4],
+                'n_max': [6]
+                },
+            'double':{              # --- Two excited electrons --- #
+                #'n_raise': [[2,2]],
+                #'n_min': [[3,3]],
+                #'n_max': [[3,3]]
+                'n_raise': [],
+                'n_min': [],
+                'n_max': []
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'n_remove': [3]   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'l_max': 3
+                },
+            },
+
+        '15':{
+            'grd':{                 # Number of electrons in each quantum number at ground
+                '1': [2],
+                '2': [8],
+                '3': [5]
+                },
+            'single':{              # --- Single excited electron --- # 
+                'grd_ind': 0,       # Index of grd state base off of
+                #'n_raise': [2,1],   # List of electrons to excite
+                #'n_min': [3,2],     # Minimum quantum number to excite to
+                #'n_max': [5,4]      # Maximum quantum number to excite to
+                'n_raise': [3],
+                'n_min': [4],
+                'n_max': [6]
+                },
+            'double':{              # --- Two excited electrons --- #
+                #'n_raise': [[2,2]],
+                #'n_min': [[3,3]],
+                #'n_max': [[3,3]]
+                'n_raise': [],
+                'n_min': [],
+                'n_max': []
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'n_remove': [3]   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'l_max': 3
+                },
             },
 
         }
