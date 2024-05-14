@@ -11,7 +11,9 @@ May 10, 2024
 # Modules
 import sys, os
 from datetime import date
+sys.path.insert(0, '/home/cjperks')
 from atomic_world.run_FAC.main_v2 import _main as FAC
+sys.path.pop(0)
 
 nele = int(sys.argv[1])
 sp = sys.argv[2]

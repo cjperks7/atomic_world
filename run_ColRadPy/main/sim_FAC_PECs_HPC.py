@@ -65,6 +65,7 @@ crm = colradpy(
     Zele = Znuc,                    # Nuclear charge
     EEDF = 'Maxwellian',            # Electron energy distriubtion function
     atomic_physics = 'incl_all',    # Atomic data files to search for
+    #atomic_physics = ['en', 'tr', 'ce', 'rr', 'ai'],
     )
 
 # Runs collisional-radiative model
