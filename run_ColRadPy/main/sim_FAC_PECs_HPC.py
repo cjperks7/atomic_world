@@ -30,7 +30,7 @@ elif sp == 'Xe':
     if nele <= 3:
         lims = [2.0, 2.5]
     else:
-        lims = [2.5, 3.0]
+        lims = [2.6, 2.8]
 elif sp == 'W':
     Znuc = 74
 

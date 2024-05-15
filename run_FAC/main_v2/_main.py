@@ -264,7 +264,7 @@ def _def(key=None):
             'double':{              # --- Two excited electrons --- #
                 'n_raise': [[1,2]],
                 'n_min': [[3,3]],
-                'n_max': [[3,7]]
+                'n_max': [[3,6]]
                 },
             'ion':{                 # --- Ionized state ---- #
                 'n_remove': [2,1]   # List of quantum numbers to remove an electron
@@ -295,9 +295,12 @@ def _def(key=None):
                 'n_max': [8,6]
                 },
             'double':{              # --- Two excited electrons --- #
-                'n_raise': [[1,2], [2,2]],
-                'n_min': [[3,3], [3,3]],
-                'n_max': [[3,3], [3,3]]
+                #'n_raise': [[1,2], [2,2]],
+                #'n_min': [[3,3], [3,3]],
+                #'n_max': [[3,3], [3,3]]
+                'n_raise': [[2,2]],
+                'n_min': [[3,3]],
+                'n_max': [[3,3]]
                 },
             'ion':{                 # --- Ionized state ---- #
                 'n_remove': [2,1]   # List of quantum numbers to remove an electron
@@ -327,7 +330,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [9,4]
+                'n_max': [8,4]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -365,7 +368,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [7,3]
+                'n_max': [6,3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -403,7 +406,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [7,3]
+                'n_max': [6,3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -441,7 +444,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [8,3]
+                'n_max': [7,3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -479,7 +482,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [2,1],
                 'n_min': [3,2],
-                'n_max': [10,5]
+                'n_max': [9,5]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -520,12 +523,12 @@ def _def(key=None):
                 'n_max': [10,10]
                 },
             'double':{              # --- Two excited electrons --- #
-                'n_raise': [[2,2]],
-                'n_min': [[3,3]],
-                'n_max': [[3,3]]
-                #'n_raise': [],
-                #'n_min': [],
-                #'n_max': []
+                #'n_raise': [[2,2]],
+                #'n_min': [[3,3]],
+                #'n_max': [[3,3]]
+                'n_raise': [],
+                'n_min': [],
+                'n_max': []
                 },
             'ion':{                 # --- Ionized state ---- #
                 'n_remove': [2]   # List of quantum numbers to remove an electron
@@ -556,7 +559,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [3,2],
                 'n_min': [4,3],
-                'n_max': [10,6]
+                'n_max': [10,5]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,3]],
@@ -595,7 +598,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [3,2],
                 'n_min': [4,3],
-                'n_max': [10,3]
+                'n_max': [8,3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -634,7 +637,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [3],
                 'n_min': [4],
-                'n_max': [8]
+                'n_max': [7]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -673,7 +676,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [3],
                 'n_min': [4],
-                'n_max': [6]
+                'n_max': [4]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -712,7 +715,7 @@ def _def(key=None):
                 #'n_max': [5,4]      # Maximum quantum number to excite to
                 'n_raise': [3],
                 'n_min': [4],
-                'n_max': [6]
+                'n_max': [4]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
