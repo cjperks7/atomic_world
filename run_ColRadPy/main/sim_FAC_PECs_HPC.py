@@ -68,8 +68,12 @@ crm = colradpy(
     #atomic_physics = ['en', 'tr', 'ce', 'rr', 'ai'],
     )
 
+print('ColRadPy FAC read done')
+
 # Runs collisional-radiative model
 crm.solve_cr()
+
+print('ColRadPy CR solve done')
 
 # Write PEC data file
 crm.write_pecs_adf15(
@@ -79,6 +83,8 @@ crm.write_pecs_adf15(
         ),
     wave_lims = lims
     )
+
+print('ColRadPy adf15 write done')
 
 # Saves effective rate data
 np.savez(
@@ -93,3 +99,5 @@ np.savez(
     Te_eV = temp_arr,
     ne_cm3 = dens_arr
     )
+
+print('Save ColRadPy rates done')
