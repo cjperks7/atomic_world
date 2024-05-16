@@ -53,7 +53,7 @@ file = os.path.join(
     )
 
 # Simulation grids
-temp_arr = np.logspace(np.log10(8.62), np.log10(8.5e4), 41) # [eV]
+temp_arr = np.logspace(np.log10(4.3e2), np.log10(8.5e4), 41) # [eV]
 dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 4) # [cm^-3]
 meta_arr = np.array([0])
 
