@@ -34,6 +34,15 @@ elif sp == 'Xe':
 elif sp == 'W':
     Znuc = 74
 
+# Prints console stdout to file
+sys.stdout = open(
+    os.path.join(
+        fol,
+        'slurm_%i.out'%(nele)
+        ),
+    'w'
+    )
+
 
 # Common FAC atomic data files name
 file = os.path.join(
