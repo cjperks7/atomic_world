@@ -24,7 +24,7 @@ if sp == 'Ar':
     lims = [3.5, 4.5]
 elif sp == 'Kr':
     Znuc = 36
-    lims = [0.5, 1.5]
+    lims = [0.94, 0.96]
 elif sp == 'Xe':
     Znuc = 54
     if nele <= 3:
@@ -33,6 +33,7 @@ elif sp == 'Xe':
         lims = [2.6, 2.8]
 elif sp == 'W':
     Znuc = 74
+    lims = [2.6, 2.8]
 
 # Prints console stdout to file
 sys.stdout = open(
