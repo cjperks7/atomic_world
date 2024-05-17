@@ -231,6 +231,10 @@ def _run_ce(
 
                     # If an excitation state ...
                     elif typ1 == 'exc':
+                        # If skipping collisional configuration interactions
+                        if 'skip_CI' in settings['restrictions'].keys():
+                            continue
+
                         # ... is interacting with an excited state
                         if typ2 == 'exc':
                             # Considers just higher or equal quantum number

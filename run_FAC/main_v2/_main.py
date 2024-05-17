@@ -620,7 +620,8 @@ def _def(key=None):
                 'n_ext': None,      # Highly excited state if desired
                 },
             'restrictions': {
-                'l_max': 3
+                'l_max': 3,
+                'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
                 },
             },
 
@@ -635,9 +636,9 @@ def _def(key=None):
                 #'n_raise': [2,1],   # List of electrons to excite
                 #'n_min': [3,2],     # Minimum quantum number to excite to
                 #'n_max': [5,4]      # Maximum quantum number to excite to
-                'n_raise': [3],
-                'n_min': [4],
-                'n_max': [4]
+                'n_raise': [2],
+                'n_min': [3],
+                'n_max': [3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -659,7 +660,8 @@ def _def(key=None):
                 'n_ext': None,      # Highly excited state if desired
                 },
             'restrictions': {
-                'l_max': 3
+                'l_max': 3,
+                'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
                 },
             },
 
@@ -674,9 +676,9 @@ def _def(key=None):
                 #'n_raise': [2,1],   # List of electrons to excite
                 #'n_min': [3,2],     # Minimum quantum number to excite to
                 #'n_max': [5,4]      # Maximum quantum number to excite to
-                'n_raise': [],
-                'n_min': [],
-                'n_max': []
+                'n_raise': [2],
+                'n_min': [3],
+                'n_max': [3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -698,7 +700,8 @@ def _def(key=None):
                 'n_ext': None,      # Highly excited state if desired
                 },
             'restrictions': {
-                'l_max': 3
+                'l_max': 3,
+                'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
                 },
             },
 
@@ -713,9 +716,9 @@ def _def(key=None):
                 #'n_raise': [2,1],   # List of electrons to excite
                 #'n_min': [3,2],     # Minimum quantum number to excite to
                 #'n_max': [5,4]      # Maximum quantum number to excite to
-                'n_raise': [],
-                'n_min': [],
-                'n_max': []
+                'n_raise': [2],
+                'n_min': [3],
+                'n_max': [3]
                 },
             'double':{              # --- Two excited electrons --- #
                 #'n_raise': [[2,2]],
@@ -737,7 +740,8 @@ def _def(key=None):
                 'n_ext': None,      # Highly excited state if desired
                 },
             'restrictions': {
-                'l_max': 3
+                'l_max': 3,
+                'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
                 },
             },
 
