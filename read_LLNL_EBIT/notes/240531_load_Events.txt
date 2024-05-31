@@ -1,0 +1,68 @@
+import ebit_ecs as eb
+filed = '/home/cjperks/work/2008_SPARCxray/LLNL_EBIT/240531_W_data'
+df, time = eb.ecs_import(filed+'/Events.20240520T183043.txt')
+df
+df_cal = eb.ecs_apply_gain(filed+'/Gain240515T00_gain.itx', df)
+df_cal
+# Enables automatic reloading of modules
+%reload_ext autoreload
+%autoreload 2
+eb.low_energy_pixels
+dir(eb)
+dir(eb)
+lp = eb.low_energy_pix()
+lp
+df_cal_pix = df_cal.loc[df_cal['Pixel'] == lp]
+df_cal_pix = df_cal.loc[df_cal['Pixel'] in lp]
+df_cal['Pixel']
+df_cal_pix = df_cal.loc[df_cal['Flags'].isin(flag_list) & df_cal['Pixel'].isin(lp)]
+flag_list = [64]
+df_cal_pix = df_cal.loc[df_cal['Flags'].isin(flag_list) & df_cal['Pixel'].isin(lp)]
+df_cal_pix
+df_cal
+plt.scatter(df_cal_pix['UTime'], df_cal_pix['PH'],s=1)
+plt.scatter(df_cal_pix['UTime'], df_cal_pix['PH'],s=.1)
+plt.scatter(df_cal_pix['UTime'], df_cal_pix['PH'],s=.1)
+df_cal_ut = df_cal_pix.loc[(df_cal_pix['UTime'] >= 11.26) & (df_cal_pix['UTime'] <= 38.537)]
+time
+df_cal_ut
+plt.scatter(df_cal_ut['UTime'], df_cal_ut['PH'],s=.1)
+spec = eb.histo(df_cal_ut['PH'], 1,-100,10000)
+plt.step(spec['binlow'],spec['hist'])
+plt.scatter(df_cal_ut['EbitPhase'], df_cal_ut['PH'],s=.1)
+plt.scatter(df_cal_ut['UTime'], df_cal_ut['EbitPhase'],s=.1)
+plt.scatter(df_cal_ut['PH'], df_cal_ut['EbitPhase'],s=.1)
+utime_stepsize = 1 #kiloseconds
+utime_range = np.arange(df_cal_ut['UTime'].min(), df_cal_ut['UTime'].max() + utime_stepsize, utime_stepsize)
+ebitphase_stepsize = 0.1
+ebitphase_range = np.arange(df_cal_ut['EbitPhase'].min(), df_cal_ut['EbitPhase'].max() + ebitphase_stepsize, ebitphase_stepsize)
+hist, x_edges, y_edges = np.histogram2d(df_cal_ut['UTime'], df_cal_ut['PH'], bins=[utime_range, ph_range])
+hist_ebitphase, x_edges_ebitphase, y_edges_ebitphase = np.histogram2d(df_cal_ut['PH'], df_cal_ut['EbitPhase'],
+                                                                      bins=[ph_range, ebitphase_range])
+ph_range = np.arange(0, 10001, 1)
+hist, x_edges, y_edges = np.histogram2d(df_cal_ut['UTime'], df_cal_ut['PH'], bins=[utime_range, ph_range])
+hist_ebitphase, x_edges_ebitphase, y_edges_ebitphase = np.histogram2d(df_cal_ut['PH'], df_cal_ut['EbitPhase'],
+                                                                      bins=[ph_range, ebitphase_range])
+vmin = 0  # Minimum value
+vmax = 10  # Maximum value
+plt.imshow(hist.T, aspect='auto', cmap='hot', origin='lower', extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], vmin=vmin, vmax=vmax)
+plt.xlabel('UTime (ks)')
+plt.ylabel('PH (eV)')
+plt.colorbar(label='Counts')
+plt.title('Intensity Plot - PH')
+plt.show()
+## Define the desired colorbar range
+vmin_ebitphase = 0  # Minimum value
+vmax_ebitphase = 1  # Maximum value
+ 
+
+## Plot the 2D histogram with adjusted colorbar range
+plt.imshow(hist_ebitphase.T, aspect='auto', cmap='hot', origin='lower',
+           extent=[x_edges_ebitphase[0], x_edges_ebitphase[-1], y_edges_ebitphase[0], y_edges_ebitphase[-1]], vmin=vmin_ebitphase, vmax=vmax_ebitphase)
+plt.xlabel('PH (eV)')
+plt.ylabel('EbitPhase (s)')
+plt.colorbar(label='Counts')
+plt.title('Intensity Plot - EbitPhase')
+plt.show()
+history
+
