@@ -66,3 +66,4 @@ plt.title('Intensity Plot - EbitPhase')
 plt.show()
 history
 
+Tungsten hexacarbonyl, W(CO)_6 -> volatile solid, sublimates
