@@ -48,7 +48,7 @@ shot = 60001
 
 # Plots loaded 
 dout = np.load(
-    '/home/cjperks/2201_Pumpout/WEST/C9_results/shots/'
+    '/home/cjperks/work/2201_Pumpout/WEST/C9_results/shots/'
     +str(shot)+'_summary.npz',
     allow_pickle=True
     )['dout'][()]

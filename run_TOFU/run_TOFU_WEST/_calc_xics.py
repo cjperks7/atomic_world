@@ -166,7 +166,7 @@ def _get_line_WEST(
     ):
 
     if path is None:
-        path = '/home/cjperks/2201_Pumpout/WEST/C9_results'
+        path = '/home/cjperks/work/2201_Pumpout/WEST/C9_results'
 
     # gets summary data
     dsum = _get_WEST_summary(shot=shot, path=path)
@@ -221,6 +221,7 @@ def _get_line_WEST(
     # Plotting
     if dsource['plt']:
         fig, ax = plt.subplots()
+        lw = 2
 
         Prf = (
             np.sum(dsum['exp']['icrf']['Prf_kW'],axis=1)
@@ -243,24 +244,28 @@ def _get_line_WEST(
         ax.plot(
             time,
             line,
-            label = 'w-line'
+            label = 'w-line',
+            linewidth = lw
             )
         ax.plot(
             dsum['exp']['icrf']['time_s'][:,0],
             Prf,
-            label = 'ICRF [arb.]'
+            label = 'ICRF [arb.]',
+            linewidth = lw
             )
 
         if 'rho_p' in dsum['exp']['profs'].keys():
             ax.plot(
                 dsum['exp']['profs']['time_s'],
                 Te,
-                label = 'Te0 [arb.]'
+                label = 'Te0 [arb.]',
+                linewidth = lw
                 )
             ax.plot(
                 dsum['exp']['profs']['time_s'],
                 ne,
-                label = 'ne0 [arb.]'
+                label = 'ne0 [arb.]',
+                linewidth = lw
                 )
 
         ax.set_xlim(0,10)
@@ -268,6 +273,7 @@ def _get_line_WEST(
         ax.grid('on')
         ax.set_title(shot)
         ax.legend()
+        ax.set_xlabel('time [s]')
 
     if davg is not None:
         dout = {}
