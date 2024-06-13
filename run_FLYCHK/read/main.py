@@ -15,6 +15,10 @@ from . import read_cooling_curves as rcc
 from . import read_frac_abund as rfa
 from . import read_ion_rates as rir
 
+__all__ = [
+    'main'
+]
+
 ##########################################
 #
 #           Main
