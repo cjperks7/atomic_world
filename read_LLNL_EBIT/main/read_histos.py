@@ -16,6 +16,7 @@ from atomic_world.run_SCRAM.scripts.tests import _read_sHANSEN as rh
 import matplotlib.gridspec as gridspec
 import scipy.constants as cnt
 from matplotlib.widgets import Slider
+from Pinhole_Optimization import _get_transmission
 
 # Useful constants
 hc = cnt.h*cnt.c/cnt.e*1e10 # [eV*AA]
@@ -133,6 +134,31 @@ def _load_histo_ascii(
     # Output
     return out
 
+# Be window thickness
+def _get_Be(key=None):
+
+    mil2meter = 25.4e-6
+    dwindows = {
+        '3.93 kV': 0.5*mil2meter, # [m]
+        '4.04 kV': 5.5*mil2meter, # [m]
+        '7.15 kV': 0.5*mil2meter, # [m]
+        '7.28 kV': 0.5*mil2meter, # [m]
+        '7.41 kV': 5.5*mil2meter, # [m]
+        '7.54 kV': 5.5*mil2meter, # [m]
+        '7.67(highCB) kV': 5.5*mil2meter, # [m]
+        '7.67(lowCB) kV': 5.5*mil2meter, # [m]
+        '7.93 kV': 5.5*mil2meter, # [m]
+        '8.19 kV': 5.5*mil2meter, # [m]
+        '8.27 kV': 5.5*mil2meter, # [m]
+        '8.45 kV': 5.5*mil2meter, # [m]
+        '8.71 kV': 5.5*mil2meter, # [m]
+        '8.97 kV': 5.5*mil2meter, # [m]
+        '15(highCB) kV': 5.5*mil2meter, # [m]
+        '15(lowCB) kV': 0, # [m]
+        }
+
+    # Output
+    return dwindows[key]
 
 ############################################
 #
@@ -214,7 +240,7 @@ def _cs_label(
 
     # Output
     try:
-        return labs[cs]
+        return labs[cs.rjust(2,'0')] +' ('+ cs+')'
     except:
         return 'missing '+cs
 
@@ -237,8 +263,11 @@ def _update_specs(
     colors = None,
     # Extra
     x_line = None,
+    x_highlight = None,
     dE = None,
     plt_scram = None,
+    scram_method = None,
+    css = None,
     # Slider
     scale1 = None,
     scale2 = None, # [keV]
@@ -246,12 +275,6 @@ def _update_specs(
 
     # Finds spectra to plot
     kks = [keys[ii] for ii in spec_ind+int(scale1)]
-
-    # Finds SCRAM spectra to plot
-    scr_ind = np.argmin(
-        abs(scram['table']['Te_eV']['data']/1e3 - scale2)
-        )
-    scr_kk = 'spec_%i'%(scr_ind)
 
     # Plot over axes
     for ii in np.arange(len(axs_l)):
@@ -278,9 +301,16 @@ def _update_specs(
 
             xscram = hc/(scram['indspec']['E_eV']['data']-dE)
             tscram = np.where(
-                (scram['indspec']['lambda_A']['data'] >= hc/x_lim[1])
-                & (scram['indspec']['lambda_A']['data'] <= hc/x_lim[0])
+                (scram['indspec']['lambda_A'] >= x_lim[0])
+                & (scram['indspec']['lambda_A'] <= x_lim[1])
                 )[0]
+
+        # Get Be window filtering
+        fil_Be = _get_transmission(
+            key = 'Be',
+            E = scram['indspec']['E_eV']['data'], # [eV]
+            thick = _get_Be(key=kks[ii]), # [m]
+            ) # dim(nlambda,)
 
         # Plots
         axs_l[ii].step(
@@ -323,29 +353,61 @@ def _update_specs(
         # Init axis
         axs_r[ii].clear()
 
-        scr_data = (
-            scram['indspec'][scr_kk]['j(ph/ion/s/AA)']
-            * scram['indspec'][scr_kk]['abund'][:,None]
-            /scram['table']['ne_cm3']['data'][0]
-            * ne_cm3
-            * fi * ne_cm3
-            ) # dim(ncs, nlambda)
+        # Just plot the Maxwellian envolope
+        if scram_method == 'Max':
+            # Finds SCRAM spectra to plot
+            scr_ind = np.argmin(
+                abs(scram['table']['Te_eV']['data']/1e3 - scale2)
+                )
+            scr_kk = 'spec_%i'%(scr_ind)
 
-        mm1 = np.max(scr_data[:,tscram], axis = 1)
-        mm2 = np.argsort(mm1)[-10:][::-1]
+            scr_data = (
+                scram['indspec'][scr_kk]['j(ph/ion/s/AA)']
+                * scram['indspec'][scr_kk]['abund'][:,None]
+                /scram['table']['ne_cm3']['data'][0]
+                * ne_cm3
+                * fi * ne_cm3
+                ) # dim(ncs, nlambda)
+            scr_data *= fil_Be[None,:]
 
-        scr_lim = np.max(scr_data[:,tscram].flatten())
+            mm1 = np.max(scr_data[:,tscram], axis = 1)
+            mm2 = np.argsort(mm1)[-10:][::-1]
 
-        # Loop over charge states
-        for jj in np.arange(scr_data.shape[0]):
-            #if scram['indspec'][scr_kk]['ions'][jj].split('-')[0] == 'd':
-            if jj in mm2 and plt_scram:
+            scr_lim = 1
+
+            # Loop over charge states
+            for jj in np.arange(scr_data.shape[0]):
+                if scram['indspec'][scr_kk]['ions'][jj].split('-')[0] == 's':
+                    continue
+                if jj in mm2 and plt_scram:
+                    scr_lim = np.max((scr_lim, np.max(scr_data[jj,tscram])))
+                    axs_r[ii].plot(
+                        xscram,
+                        scr_data[jj,:],
+                        label = _cs_label(
+                            cs = scram['indspec'][scr_kk]['ions'][jj].split('-')[1]
+                            )
+                        )
+        
+        # Just plot the most abundant charge states
+        elif scram_method == 'cs':
+            plt_cs = list(range(scale2-4, scale2+6))
+
+            for cs in plt_cs:
+                if cs not in css.keys():
+                    continue
+
+                scr_data = (
+                    scram['indspec']['spec_%i'%(css[cs]['spec'])]['j(ph/ion/s/AA)'][css[cs]['ind'],:]
+                    ).copy()
+                #scr_data *= fil_Be
+                scr_data /= np.max(scr_data[tscram])
+                scr_lim = 2
+
                 axs_r[ii].plot(
                     xscram,
-                    scr_data[jj,:],
-                    label = _cs_label(
-                        cs = scram['indspec'][scr_kk]['ions'][jj].split('-')[1]
-                        )
+                    scr_data,
+                    label = _cs_label(cs=str(cs))
                     )
 
         # Color axis
@@ -365,6 +427,15 @@ def _update_specs(
                     [xx,xx],
                     [0, 1.2*np.max(specs[kks[ii]]['hist'][bins])],
                     'k--'
+                    )
+
+        if x_highlight is not None:
+            for xxs in x_highlight:
+                axs_l[ii].axvspan(
+                    xxs[0],
+                    xxs[1],
+                    color = 'm',
+                    alpha = 0.3
                     )
 
     if plt_scram:
@@ -389,8 +460,11 @@ def _update_func(
     x_lim = None,
     colors = None,
     x_line = None,
+    x_highlight = None,
     dE = None,
     plt_scram = None,
+    scram_method = None,
+    css = None,
     ):
 
     def update(scale1,scale2):
@@ -406,8 +480,11 @@ def _update_func(
             x_lim = x_lim,
             colors = colors,
             x_line = x_line,
+            x_highlight = x_highlight,
             dE = dE,
             plt_scram = plt_scram,
+            scram_method = scram_method,
+            css = css,
             scale1 = scale1,
             scale2 = scale2, # [eV]
             )
@@ -428,10 +505,13 @@ def plot_histos(
     # Color contols
     spec_map = 'winter',
     # Slider controls
+    scram_method = 'Max', # 'Max or 'cs'
+    cs_init = 28,
     Te_init = 5, # [keV]
     spec_init = 2,
     # Extra
     x_line = None,
+    x_highlight = None,
     dE = 0.0,
     plt_scram = True,
     ):
@@ -446,6 +526,26 @@ def plot_histos(
 
     # Loaded spectra
     keys = list(specs.keys())
+
+    # Finds SCRAM run where each charge state was maximized
+    if scram_method == 'cs':
+        css = {}
+        for cs in range(32,5,-1):
+            css[cs] = {
+                'abund': 0,
+                'spec': -1,
+                'ind': -1,
+                }
+            for tt in range(scram['table']['Te_eV']['data'].shape[0]):
+                if 'd-%02i'%(cs) in scram['indspec']['spec_%i'%(tt)]['ions']:
+                    ind = scram['indspec']['spec_%i'%(tt)]['ions'].index('d-%02i'%(cs))
+
+                    if scram['indspec']['spec_%i'%(tt)]['abund'][ind] > css[cs]['abund']:
+                        css[cs]['abund'] = scram['indspec']['spec_%i'%(tt)]['abund'][ind]
+                        css[cs]['spec'] = tt
+                        css[cs]['ind'] = ind
+    elif scram_method == 'Max':
+        css = None
 
     # Init figure
     plt.rcParams.update({'font.size': font_size})
@@ -500,10 +600,16 @@ def plot_histos(
         x_lim = x_lim,
         colors = colors,
         x_line = x_line,
+        x_highlight = x_highlight,
         dE = dE,
         plt_scram = plt_scram,
+        scram_method = scram_method,
+        css = css,
         )
-    interact_func(spec_init, Te_init)
+    if scram_method == 'Max':
+        interact_func(spec_init, Te_init)
+    elif scram_method == 'cs':
+        interact_func(spec_init, cs_init)
     
     # Add sliders below the subplots
     ax_slider1 = plt.axes(
@@ -520,11 +626,22 @@ def plot_histos(
         spec_ind_1, spec_ind_2,
         valinit=spec_init, valstep=1
         )
-    slider2 = Slider(ax_slider2, 'Te [keV]',
-        np.min(scram['table']['Te_eV']['data']/1e3), 
-        np.max(scram['table']['Te_eV']['data']/1e3),
-        valinit=Te_init,
-        )
+
+    if scram_method == 'Max':
+        slider2 = Slider(ax_slider2, 'Te [keV]',
+            np.min(scram['table']['Te_eV']['data']/1e3), 
+            np.max(scram['table']['Te_eV']['data']/1e3),
+            valinit=Te_init,
+            )
+        interact_func(spec_init, Te_init)
+    elif scram_method == 'cs':
+        slider2 = Slider(ax_slider2, 'num. elec.',
+            #32, 6,
+            6, 32,
+            valinit=cs_init,
+            valstep=1
+            )
+        interact_func(spec_init, cs_init)
 
     # Function to be called anytime a slider's value changes
     def sliders_on_changed(val):
