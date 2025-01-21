@@ -18,7 +18,8 @@ from transport_world.plot_utils import plt_slider
 from atomic_world.run_TOFU.run_TOFU_WEST import get_west
 
 __all__ = [
-    'get_pumpout_est'
+    'get_pumpout_est',
+    '_get_WEST_summary'
     ]
 
 ########################################################
@@ -442,6 +443,9 @@ def _get_WEST_summary(
     shot=None,
     path=None,
     ):
+
+    if path is None:
+        path = '/home/cjperks/work/2201_Pumpout/WEST/C9_results'
 
     # output
     return np.load(

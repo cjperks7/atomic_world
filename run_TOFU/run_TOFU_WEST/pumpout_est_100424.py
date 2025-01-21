@@ -9,7 +9,7 @@ Apr 10, 2024
 
 # Modules
 from atomic_world.run_TOFU import run_TOFU_WEST as rtfw
-
+'''
 # Shot #
 shot =59989
 #shot =60001
@@ -18,6 +18,13 @@ davg = {
     't1': [3.8, 4.3],
     't2': [5.4, 6.0]
     }
+'''
+shot = 59991
+davg = {
+    't1': [3.5,4.3],
+    't2': [6.2,7.2]
+}
+
 
 rtfw.get_pumpout_est(
     device = 'WEST',
