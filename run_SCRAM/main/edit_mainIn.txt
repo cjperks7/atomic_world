@@ -1,0 +1,30 @@
+mainIn.txt seems to be the main input file for SCRAM
+
+1) change "element" to desired nuclear charge
+
+2) 
+
+
+To compile and run (unix) ---------------------------------------
+ 1. copy data files termE.dat and termf.dat and any desired element archive (e.g. Arh.tar.gz) to /your/data/directory/
+
+ 2. copy all source (.for) files (or executable, e.g. s76.o) to /your/working/directory/
+
+ 3. compile using command:
+   ifort -o s76.o Scram76.for CAtoFull.for Continuum.for dblas.for daxb.for IntRates.for MainIn.for PeLT.for Rates.for SCst.for Spectrum.for Teff.for
+
+ 4. run using command:
+   ./s763.o [infile=NameOfMainInputFile] [case=NameForOutputFiles] [path=/your/data/directory/] [tdin=NameOfTime-DepInputFile]
+   ./s763.o infile=mainIn.txt case=Arh path=/gscratch/sbhanse/sd6
+
+   the optional arguments control the input and output filenames and the data path
+   the arguments may appear in any order but SCRAM cannot parse spaces or quotes within any unit
+   (e.g. use [infile=mainIn.txt], NOT [infile = mainIn.txt] or [infile='mainIn.txt'])
+
+   output files named 'case.IB', 'case.spec', etc. will be generated in the working directory
+
+   defaults are:
+     infile=mainIn.txt              (located in the working directory)
+     case=element                   (NOTE: SCRAM WILL overwrite existing data files)
+     path=C:\sd6                                    (directory containing LIMBO and FAC atomic data files)
+     tdin=tdIn.txt                  (this file is only accessed if ntdep=3 is set in main input file)
