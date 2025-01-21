@@ -13,10 +13,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os, sys
 from atomic_world.run_SCRAM.scripts.tests import _read_sHANSEN as rh
+from atomic_world.run_SCRAM.scripts.tests import _read_sHANSEN82 as rh82
 import matplotlib.gridspec as gridspec
 import scipy.constants as cnt
 from matplotlib.widgets import Slider
 from matplotlib.ticker import ScalarFormatter
+import copy
 
 sys.path.insert(0, '/home/cjperks/tofu_sparc')
 from Pinhole_Optimization import _get_transmission
@@ -259,23 +261,44 @@ def _get_Be(key=None):
 
 def read_SCRAM(
     file_path = None,
-    name = 'W_h_scram_'
+    name = None,
+    version = 8.2,
     ):
 
-    # Default
-    if file_path is None:
-        file_path = os.path.join(
-            '/home/cjperks/work',
-            '2008_SPARCxray/SCRAM',
-            'from_sHANSEN/240529'
+    if version == 8.2:
+        # Default
+        if name is None:
+            name = 'W_ebit_'
+        if file_path is None:
+            file_path = os.path.join(
+                '/home/cjperks/work',
+                '2008_SPARCxray/SCRAM',
+                'from_sHANSEN/241220'
+                )
+
+        out = rh82.main82(
+            filepath = file_path,
+            name = name,
+            quants = ['spec', 'indspec']
             )
 
-    # Reads SCRAM data files
-    out = rh.main(
-        filepath=file_path,
-        name=name,
-        #quants = ['spec', 'table']
-        )
+    else:
+        # Default
+        if name is None:
+            name = 'W_h_scram_'
+        if file_path is None:
+            file_path = os.path.join(
+                '/home/cjperks/work',
+                '2008_SPARCxray/SCRAM',
+                'from_sHANSEN/240529'
+                )
+
+        # Reads SCRAM data files
+        out = rh.main(
+            filepath=file_path,
+            name=name,
+            #quants = ['spec', 'table']
+            )
 
     # Output
     return out
@@ -458,7 +481,7 @@ def _update_specs(
                 /scram['table']['ne_cm3']['data'][0]
                 * ne_cm3
                 * fi * ne_cm3
-                ) # dim(ncs, nlambda)
+                ) # dim(ncs, nlambda), [ph/cm^3/s/AA]
             scr_data *= fil_Be[None,:]
 
             mm1 = np.max(scr_data[:,tscram], axis = 1)
@@ -479,7 +502,44 @@ def _update_specs(
                             cs = scram['indspec'][scr_kk]['ions'][jj].split('-')[1]
                             )
                         )
-        
+
+        # Plot the Gaussian envolope
+        elif scram_method == 'Gauss':
+            default_colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+            markers = ['o', 's', 'D', '^', 'v', '<', '>', 'p', '*', 'H']
+            lines = ['-', '--', ':', '-.', '-', '--', ':', '-.', '-', '--', ':', '-.']
+
+            # Finds SCRAM spectra to plot
+            scr_ind = np.argmin(
+                abs(scram['settings']['Ebeam'] - scale2)
+                )
+            scr_kk = 'spec_%0.2fkV'%(scram['settings']['Ebeam'][scr_ind])
+            scr_data = copy.copy(scram['indspec'][scr_kk]['j(ph/s/cm^3/eV)']) # dim(ncharge, nE), [ph/s/cm^3/eV]
+            scr_data *= fil_Be[None,:]
+            scr_lim = 0.0
+
+            mm1 = np.max(scr_data[:,tscram], axis = 1)
+            mm2 = np.argsort(mm1)[-10:][::-1]
+
+            # Loop over charge states
+            for jj in np.arange(scr_data.shape[0]):
+                if scram['indspec'][scr_kk]['ions'][jj].split('-')[0] == 's':
+                    continue
+                if jj in mm2 and plt_scram:
+                    scr_lim = np.max((scr_lim, np.max(scr_data[jj,tscram])))
+                    cs_ind = (int(scram['indspec'][scr_kk]['ions'][jj].split('-')[1])-10)%10
+                    axs_r[ii].plot(
+                        xscram,
+                        scr_data[jj,:],
+                        lines[cs_ind]+markers[cs_ind],
+                        label = _cs_label(
+                            cs = scram['indspec'][scr_kk]['ions'][jj].split('-')[1]
+                            ),
+                        color = default_colors[cs_ind],
+                        #markerfacecolor = 'none',
+                        markersize = 8,
+                        )
+                
         # Just plot the most abundant charge states
         elif scram_method == 'cs':
             plt_cs = list(range(scale2-4, scale2+6))
@@ -599,6 +659,7 @@ def plot_histos(
     scram_method = 'Max', # 'Max or 'cs'
     cs_init = 28,
     Te_init = 5, # [keV]
+    Eb_init = 15, # [kV]
     spec_init = 2,
     # Extra
     x_line = None,
@@ -635,7 +696,7 @@ def plot_histos(
                         css[cs]['abund'] = scram['indspec']['spec_%i'%(tt)]['abund'][ind]
                         css[cs]['spec'] = tt
                         css[cs]['ind'] = ind
-    elif scram_method == 'Max':
+    else:
         css = None
 
     # Init figure
@@ -701,6 +762,8 @@ def plot_histos(
         interact_func(spec_init, Te_init)
     elif scram_method == 'cs':
         interact_func(spec_init, cs_init)
+    elif scram_method == 'Gauss':
+        interact_func(spec_init, Eb_init)
     
     # Add sliders below the subplots
     ax_slider1 = plt.axes(
@@ -733,6 +796,13 @@ def plot_histos(
             valstep=1
             )
         interact_func(spec_init, cs_init)
+    elif scram_method == 'Gauss':
+        slider2 = Slider(ax_slider2, 'Ebeam [kV]',
+            np.min(scram['settings']['Ebeam']),
+            np.max(scram['settings']['Ebeam']),
+            valinit = Eb_init
+            )
+        interact_func(spec_init, Eb_init)
 
     # Function to be called anytime a slider's value changes
     def sliders_on_changed(val):
@@ -763,6 +833,7 @@ def plot_side_by_side(
     scram_method = 'Max', # 'Max or 'cs'
     cs_init = 28,
     Te_init = 5, # [keV]
+    Eb_init = 15, # [kV]
     # Extra
     x_line = None,
     x_highlight = None,
@@ -946,7 +1017,7 @@ def plot_side_by_side(
                 /scram['table']['ne_cm3']['data'][0]
                 * ne_cm3
                 * fi * ne_cm3
-                ) # dim(ncs, nlambda)
+                ) # dim(ncs, nlambda), [ph/s/cm^3/AA]
             scr_data *= fil_Be[None,:]
 
             mm1 = np.max(scr_data[:,tscram], axis = 1)
@@ -967,7 +1038,50 @@ def plot_side_by_side(
                             cs = scram['indspec'][scr_kk]['ions'][jj].split('-')[1]
                             )
                         )
-        
+
+        # Plot the Gaussian envolope
+        elif scram_method == 'Gauss':
+            default_colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+            markers = ['o', 's', 'D', '^', 'v', '<', '>', 'p', '*', 'H']
+            lines = ['-', '--', ':', '-.', '-', '--', ':', '-.', '-', '--', ':', '-.']
+
+            # Finds SCRAM spectra to plot
+            scr_ind = np.argmin(
+                abs(scram['settings']['Ebeam'] - Eb_init)
+                )
+            scr_kk = 'spec_%0.2fkV'%(scram['settings']['Ebeam'][scr_ind])
+            scr_data = copy.copy(scram['indspec'][scr_kk]['j(ph/s/cm^3/eV)']) # dim(ncharge, nE), [ph/s/cm^3/eV]
+            scr_data *= fil_Be[None,:]
+            scr_max = 0.0
+            print(scr_kk)
+
+            mm1 = np.max(scr_data[:,tscram], axis = 1)
+            mm2 = np.argsort(mm1)[-10:][::-1]
+
+            for jj in np.arange(scr_data.shape[0]):
+                if scram['indspec'][scr_kk]['ions'][jj].split('-')[0] == 's':
+                    continue
+                if jj in mm2 and plt_scram: 
+                    scr_max = np.max((scr_max, np.max(scr_data[jj,tscram])))           
+
+            # Loop over charge states
+            for jj in np.arange(scr_data.shape[0]):
+                if scram['indspec'][scr_kk]['ions'][jj].split('-')[0] == 's':
+                    continue
+                if jj in mm2 and plt_scram:
+                    cs_ind = (int(scram['indspec'][scr_kk]['ions'][jj].split('-')[1])-10)%10
+                    axs_r[ii].plot(
+                        xscram,
+                        scr_data[jj,:]/scr_max,
+                        lines[cs_ind]+markers[cs_ind],
+                        label = _cs_label(
+                            cs = scram['indspec'][scr_kk]['ions'][jj].split('-')[1]
+                            ),
+                        color = default_colors[cs_ind],
+                        #markerfacecolor = 'none',
+                        markersize = 8,
+                        )
+                
         # Just plot the most abundant charge states
         elif scram_method == 'cs':
             # Finds SCRAM run where each charge state was maximized

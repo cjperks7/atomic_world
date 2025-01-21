@@ -24,6 +24,83 @@ specs, scram = rh.plot_histos(
     spec_init = 15
     )
 
+from matplotlib.ticker import ScalarFormatter
+import scipy.constants as cnt
+hc = cnt.h*cnt.c/cnt.e*1e10 # [eV*AA]
+
+formatter = ScalarFormatter()
+formatter.set_powerlimits((-2, 2))  
+keys = [
+    #'7.15 kV', '7.28 kV', '7.41 kV', '7.54 kV', '7.67(highCB) kV', '7.67(lowCB) kV', '7.93 kV', '8.19 kV', '8.27 kV', '8.45 kV',
+    '8.71 kV', '8.97 kV', '9.23 kV', '9.49 kV', '9.75 kV',
+    '15(lowCB) kV', '15(highCB) kV'
+    ]
+
+fig, ax = plt.subplots(figsize = (12,6))
+vmax = 0
+xlim = [6920, 8380]#[4500, 4600]
+lw = 2
+
+for kk in keys:
+    #ax.step(
+    #    specs[kk]['binlow'],
+    #    specs[kk]['hist'],
+    #    label = kk
+    #    )
+    ax.plot(
+        #0.5*(specs[kk]['binlow']+specs[kk]['binhigh']),
+        hc/(0.5*(specs[kk]['binlow']+specs[kk]['binhigh'])),
+        specs[kk]['hist'],
+        label = kk,
+        linewidth = lw
+        )
+    ind = np.where(
+        (specs[kk]['binlow'] >= xlim[0])
+        & (specs[kk]['binlow'] <= xlim[1])
+        )   
+
+    vmax = np.max(np.r_[vmax, np.max(specs[kk]['hist'][ind])])
+
+'''
+E0 = 4557.591
+dE = 5
+
+ax.axvspan(
+    E0-dE,
+    E0+dE,
+    color = 'm',
+    alpha = 0.3
+    )
+ax.plot(
+    [E0, E0],
+    [0, 1.1*vmax],
+    'k--',
+    linewidth=lw-1
+    )
+
+ax.text(
+    E0,
+    vmax,
+    'Ne-like Xe; 3D',
+    color = 'k'
+    )
+'''
+#ax.set_xlim(xlim)
+ax.set_xlim(hc/xlim[1], hc/xlim[0])
+ax.grid('on')
+ax.set_ylim(0,1.1*vmax)
+#ax.legend(labelcolor='linecolor', loc = 'upper left')
+#ax.set_xlabel('Photon energy [eV]')
+leg = ax.legend(labelcolor='linecolor', loc = 'upper right')
+leg.set_draggable('on')
+ax.set_xlabel('Photon wavelength [AA]')
+ax.set_ylabel('[counts/s]')
+ax.yaxis.set_major_formatter(formatter)
+
+
+
+
+
 specs, scram = rh.plot_histos(
     specs=specs,
     scram=scram,
