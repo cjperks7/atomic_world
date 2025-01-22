@@ -41,135 +41,149 @@ def _states(
         'ion': [],
         }
 
+    # If user wishes to build states with a direct string
+    if settings['method'] == 'string':
+        # Loop over group types
+        for typ in groups.keys():
+            # Loop over explicitly defined levels
+            for lab in settings[typ].keys():
+                # Defines level
+                groups[typ].append(lab)
+                struct = settings[typ][lab]
 
-     # Loop over group types
-    for typ in groups.keys():
-        print(typ)
+                fac.Config(groups[typ][-1], struct)
+                print(struct)
 
-        # If considering a ground state
-        if typ == 'grd':
-            for ii in np.arange(len(settings['grd']['1'])):
-                # Builds ground state
-                groups = _build_state(
-                    ind = ii,
-                    label = ii,
-                    config = settings['grd'],
-                    typ = typ,
-                    groups = groups,
-                    fac = fac,
-                    restrict = settings['restrictions'],
-                    )
+    # If user wishes to define them by my algorithm
+    elif settings['method'] == 'algo':
+        # Loop over group types
+        for typ in groups.keys():
+            print(typ)
 
-        # If considering an excited state
-        elif typ == 'exc':
-            grd_ind = settings['single']['grd_ind']
-
-            # ---- Single excited electron --- #
-            print('single')
-
-            # Loop over electrons to excite
-            for ii in np.arange(len(settings['single']['n_raise'])):
-                # Electron to delete
-                nd = settings['single']['n_raise'][ii]
-
-                # Loop levels to excite to
-                for nn in range(
-                    settings['single']['n_min'][ii], 
-                    settings['single']['n_max'][ii]+1
-                    ):
-                    tmp = copy.deepcopy(settings['grd'])
-
-                    # Deletes electron to excite
-                    tmp[str(nd)][grd_ind] -= 1
-
-                    # Promotes electron
-                    if str(nn) not in tmp.keys():
-                        tmp[str(nn)] = [0]*len(tmp['1'])
-                    tmp[str(nn)][grd_ind] += 1
-
+            # If considering a ground state
+            if typ == 'grd':
+                for ii in np.arange(len(settings['grd']['1'])):
                     # Builds ground state
                     groups = _build_state(
-                        ind = grd_ind,
-                        label = [nd,nn],
-                        config = tmp,
+                        ind = ii,
+                        label = ii,
+                        config = settings['grd'],
                         typ = typ,
                         groups = groups,
                         fac = fac,
-                        long = True,
                         restrict = settings['restrictions'],
                         )
 
-            # ---- Double excited electrons --- #
-            print('double')
+            # If considering an excited state
+            elif typ == 'exc':
+                grd_ind = settings['single']['grd_ind']
 
-            # Loop over electrons to excite
-            for ii in np.arange(len(settings['double']['n_raise'])):
-                # Electron to delete
-                nd1 = settings['double']['n_raise'][ii][0]
-                nd2 = settings['double']['n_raise'][ii][1]
+                # ---- Single excited electron --- #
+                print('single')
 
-                # Loop over levels to excite to
-                for nn1 in range(
-                    settings['double']['n_min'][ii][0], 
-                    settings['double']['n_max'][ii][0]+1
-                    ):
-                    for nn2 in range(
-                        settings['double']['n_min'][ii][1], 
-                        settings['double']['n_max'][ii][1]+1
+                # Loop over electrons to excite
+                for ii in np.arange(len(settings['single']['n_raise'])):
+                    # Electron to delete
+                    nd = settings['single']['n_raise'][ii]
+
+                    # Loop levels to excite to
+                    for nn in range(
+                        settings['single']['n_min'][ii], 
+                        settings['single']['n_max'][ii]+1
                         ):
                         tmp = copy.deepcopy(settings['grd'])
 
-                        # Avoid double counting
-                        if nn2 < nn1:
-                            continue
-
                         # Deletes electron to excite
-                        tmp[str(nd1)][grd_ind] -= 1
-                        tmp[str(nd2)][grd_ind] -= 1
+                        tmp[str(nd)][grd_ind] -= 1
 
                         # Promotes electron
-                        if str(nn1) not in tmp.keys():
-                            tmp[str(nn1)] = [0]*len(tmp['1'])
-                        if str(nn2) not in tmp.keys():
-                            tmp[str(nn2)] = [0]*len(tmp['1'])
-                        tmp[str(nn1)][grd_ind] += 1
-                        tmp[str(nn2)][grd_ind] += 1
+                        if str(nn) not in tmp.keys():
+                            tmp[str(nn)] = [0]*len(tmp['1'])
+                        tmp[str(nn)][grd_ind] += 1
 
                         # Builds ground state
                         groups = _build_state(
                             ind = grd_ind,
-                            label = [nd1, nd2,nn1,nn2],
+                            label = [nd,nn],
                             config = tmp,
                             typ = typ,
                             groups = groups,
                             fac = fac,
-                            double = True,
                             long = True,
                             restrict = settings['restrictions'],
                             )
 
-        # If considering an ionized state
-        elif typ == 'ion':
-            # Loop over electrons to ionize
-            for ii in np.arange(len(settings['ion']['n_remove'])):
-                tmp = copy.deepcopy(settings['grd'])
+                # ---- Double excited electrons --- #
+                print('double')
 
-                # Electron to delete
-                nd = settings['ion']['n_remove'][ii]
+                # Loop over electrons to excite
+                for ii in np.arange(len(settings['double']['n_raise'])):
+                    # Electron to delete
+                    nd1 = settings['double']['n_raise'][ii][0]
+                    nd2 = settings['double']['n_raise'][ii][1]
 
-                # Deletes electron to excite
-                tmp[str(nd)][grd_ind] -= 1
+                    # Loop over levels to excite to
+                    for nn1 in range(
+                        settings['double']['n_min'][ii][0], 
+                        settings['double']['n_max'][ii][0]+1
+                        ):
+                        for nn2 in range(
+                            settings['double']['n_min'][ii][1], 
+                            settings['double']['n_max'][ii][1]+1
+                            ):
+                            tmp = copy.deepcopy(settings['grd'])
 
-                # Builds ground state
-                groups = _build_state(
-                    ind = grd_ind,
-                    label = ii,
-                    config = tmp,
-                    typ = typ,
-                    groups = groups,
-                    fac = fac,
-                    restrict = settings['restrictions'],
-                    )
+                            # Avoid double counting
+                            if nn2 < nn1:
+                                continue
+
+                            # Deletes electron to excite
+                            tmp[str(nd1)][grd_ind] -= 1
+                            tmp[str(nd2)][grd_ind] -= 1
+
+                            # Promotes electron
+                            if str(nn1) not in tmp.keys():
+                                tmp[str(nn1)] = [0]*len(tmp['1'])
+                            if str(nn2) not in tmp.keys():
+                                tmp[str(nn2)] = [0]*len(tmp['1'])
+                            tmp[str(nn1)][grd_ind] += 1
+                            tmp[str(nn2)][grd_ind] += 1
+
+                            # Builds ground state
+                            groups = _build_state(
+                                ind = grd_ind,
+                                label = [nd1, nd2,nn1,nn2],
+                                config = tmp,
+                                typ = typ,
+                                groups = groups,
+                                fac = fac,
+                                double = True,
+                                long = True,
+                                restrict = settings['restrictions'],
+                                )
+
+            # If considering an ionized state
+            elif typ == 'ion':
+                # Loop over electrons to ionize
+                for ii in np.arange(len(settings['ion']['n_remove'])):
+                    tmp = copy.deepcopy(settings['grd'])
+
+                    # Electron to delete
+                    nd = settings['ion']['n_remove'][ii]
+
+                    # Deletes electron to excite
+                    tmp[str(nd)][grd_ind] -= 1
+
+                    # Builds ground state
+                    groups = _build_state(
+                        ind = grd_ind,
+                        label = ii,
+                        config = tmp,
+                        typ = typ,
+                        groups = groups,
+                        fac = fac,
+                        restrict = settings['restrictions'],
+                        )
 
     print(groups)
     # Output

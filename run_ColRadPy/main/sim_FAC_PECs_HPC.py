@@ -21,19 +21,26 @@ fol = sys.argv[3]
 
 if sp == 'Ar':
     Znuc = 18
-    lims = [3.5, 4.5]
+    lims = [3.5, 4.5] # HIREX Sr
+    #lims = [23,30] # XEUS
+    #lims = [215, 225] # LoWEUS
 elif sp == 'Kr':
     Znuc = 36
-    lims = [0.94, 0.96]
+    lims = [0.94, 0.96] # XRS
 elif sp == 'Xe':
     Znuc = 54
     if nele <= 3:
-        lims = [2.0, 2.5]
+        lims = [2.0, 2.5] # XRS
     else:
-        lims = [2.6, 2.8]
+        lims = [2.6, 2.8] # XRS
 elif sp == 'W':
     Znuc = 74
-    lims = [2.6, 2.8]
+    lims = [2.6, 2.8] # XRS-HR-Xe
+elif sp == 'Mo':
+    Znuc = 42
+    #lims = [2.6, 2.8] # XRS-HR-Xe
+    #lims = [3.5, 4.5] # HIREX Sr
+    lims = [110,130] # LoWEUS
 
 # Prints console stdout to file
 sys.stdout = open(
@@ -96,6 +103,7 @@ crm.write_pecs_adf15(
 
 print('ColRadPy adf15 write done')
 
+'''
 # Saves effective rate data
 np.savez(
     os.path.join(
@@ -111,3 +119,4 @@ np.savez(
     )
 
 print('Save ColRadPy rates done')
+'''

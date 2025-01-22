@@ -84,6 +84,9 @@ def rates(
         fac = fac,
         )
 
+    import pdb
+    pdb.set_trace()
+
     # Calculates energy levels
     if 'en' in physics:
         _en._run_en(
@@ -160,9 +163,47 @@ def rates(
 # Setting defaults
 def _def(key=None):
 
+    # Custom settings
+    if key.startswith('XEUS_Mo'):
+        # Organized as "XEUS_Mo_nele"
+        nouter = int(float(key.split('XEUS_Mo_')[-1])-18)
+        outer = ''
+        ioniz1 = ''
+        ioniz2 = ''
+        key = 'XEUS_Mo'
+    elif key.startswith('Survey_W'):
+        # Organized as "Survey_W_nele"
+        nouter = int(float(key.split('Survey_W_')[-1])-10)
+        if nouter < 3:
+            outer = '3s'%(nouter)
+        elif nouter < 9:
+            outer = '3s2 3p'%(nouter-2)
+        # Ionization state
+        if nouter < 2:
+            ioniz1 = '1*2 2*8'
+        elif nouter < 4:
+            ioniz1 = '1*2 2*8 3*%i;3p<1;3d<1'%(nouter-1)
+        else:
+            ioniz1 = '1*2 2*8 3*%i;3d<1'%(nouter-1)
+        # Inner-shell ionization
+        if nouter <3:
+            ioniz2 = '1*2 2s2 2p5 3*%i;3p<1;3d<1'%(nouter)
+        else:
+            ioniz2 = '1*2 2s2 2p5 3*%i;3d<1'%(nouter)
+        key = 'Survey_W'
+    elif key.startswith('EBIT_W'):
+        # Organized as "XEUS_Mo_nele"
+        nouter = int(float(key.split('EBIT_W_')[-1])-12)
+        outer = ''
+        ioniz1 = ''
+        ioniz2 = ''
+        key = 'EBIT_W'
+
+
     # Various default settings
     dsettings = {
         'debug':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each qunatum number at ground
                 '1': [2],
                 '2': [1]
@@ -192,6 +233,7 @@ def _def(key=None):
             },
 
         '1':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each qunatum number at ground
                 '1': [1]
                 },
@@ -221,6 +263,7 @@ def _def(key=None):
             },
 
         '2':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2]
                 },
@@ -251,6 +294,7 @@ def _def(key=None):
 
 
         '3':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [1]
@@ -281,6 +325,7 @@ def _def(key=None):
             },
 
         '4':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [2]
@@ -319,6 +364,7 @@ def _def(key=None):
             },
         
         '5':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [3]
@@ -357,6 +403,7 @@ def _def(key=None):
             },
 
         '6':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [4]
@@ -395,6 +442,7 @@ def _def(key=None):
             },
 
         '7':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [5]
@@ -433,6 +481,7 @@ def _def(key=None):
             },
 
         '8':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [6]
@@ -471,6 +520,7 @@ def _def(key=None):
             },
 
         '9':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [7]
@@ -509,6 +559,7 @@ def _def(key=None):
             },
 
         '10':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [8]
@@ -547,6 +598,7 @@ def _def(key=None):
             },
 
         '11':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [8],
@@ -586,6 +638,7 @@ def _def(key=None):
             },
 
         '12':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [8],
@@ -626,6 +679,7 @@ def _def(key=None):
             },
 
         '13':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [8],
@@ -666,6 +720,7 @@ def _def(key=None):
             },
 
         '14':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [8],
@@ -706,6 +761,7 @@ def _def(key=None):
             },
 
         '15':{
+            'method': 'algo', # Define energy levels by my algorithm
             'grd':{                 # Number of electrons in each quantum number at ground
                 '1': [2],
                 '2': [8],
@@ -741,6 +797,86 @@ def _def(key=None):
                 },
             'restrictions': {
                 'l_max': 3,
+                'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
+                },
+            },
+
+        'XEUS_Mo':{
+            'method': 'string', # Define energy levels by a direct string
+            'grd':{                 # Number of electrons in each quantum number at ground
+                'grd.0': '1*2 2*8 3s2 3p6 3d%i'%(nouter),
+                },
+            'exc':{              # --- Excited state --- # 
+                'exc.3d->4f': '1*2 2*8 3s2 3p6 3d%i 4f1'%(nouter-1),
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'ion.0': '1*2 2*8 3s2 3p6 3d%i'%(nouter-1),   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
+                },
+            },
+
+        'Survey_W':{
+            'method': 'string', # Define energy levels by a direct string
+            'grd':{                 # Number of electrons in each quantum number at ground
+                'grd.0': '1*2 2*8 '+outer,
+                },
+            'exc':{             # --- Excited state --- # 
+                'exc.3->3': '1*2 2*8 3*%i;3d<2'%(nouter),
+                'exc.2p->3': '1*2 2s2 2p5 3*%i;3d<2'%(nouter+1),
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'ion.0': ioniz1,   # List of quantum numbers to remove an electron
+                'ion.1': ioniz2,
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'skip_CI': False,    # Skip configuration interactions (ce: exc->exc)
+                },
+            },
+
+        'EBIT_W':{
+            'method': 'string', # Define energy levels by a direct string
+            'grd':{                 # Number of electrons in each quantum number at ground
+                'grd.0': '1*2 2*8 3s2 3p%i'%(nouter),
+                'grd.1': '1*2 2*8 3*%i;3p<%i;3d>0;3d<2'%(nouter+2, nouter),
+                },
+            'exc':{             # --- Excited state --- # 
+                #'exc.3->4f': '1*2 2*8 3*%i 4f1;3p<%i;3d<1'%(nouter-1+2, nouter),
+                #'exc.3->5f': '1*2 2*8 3*%i 5f1;3p<%i;3d<1'%(nouter-1+2, nouter),
+                'exc.3->6f': '1*2 2*8 3*%i 6f1;3p<%i;3d<1'%(nouter-1+2, nouter),
+                #'exc.3->3d': '1*2 2*8 3*%i;3p<%i;3d>0;3d<2'%(nouter+2, nouter),
+                #'exc.3->4d': '1*2 2*8 3*%i 4d1;3p<%i;3d<1'%(nouter+1, nouter),
+                'exc.3->5d': '1*2 2*8 3*%i 5d1;3p<%i;3d<1'%(nouter+1, nouter),
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'ion.0': '1*2 2*8 3*%i;3d<1'%(nouter+2-1)   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
                 'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
                 },
             },
