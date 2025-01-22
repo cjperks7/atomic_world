@@ -36,11 +36,24 @@ elif sp == 'Xe':
 elif sp == 'W':
     Znuc = 74
     lims = [2.6, 2.8] # XRS-HR-Xe
+    #lims = [1.4, 1.8] # XRS-LR
 elif sp == 'Mo':
     Znuc = 42
     #lims = [2.6, 2.8] # XRS-HR-Xe
     #lims = [3.5, 4.5] # HIREX Sr
     lims = [110,130] # LoWEUS
+elif sp == 'Fe':
+    Znuc = 26
+    lims = [1.4, 1.8] # XRS-LR
+elif sp == 'Cr':
+    Znuc = 24
+    lims = [1.4, 1.8] # XRS-LR
+elif sp == 'Ni':
+    Znuc = 28
+    lims = [1.4, 1.8] # XRS-LR
+elif sp == 'Cu':
+    Znuc = 29
+    lims = [1.4, 1.8] # XRS-LR
 
 # Prints console stdout to file
 sys.stdout = open(
@@ -61,7 +74,7 @@ file = os.path.join(
     )
 
 # Simulation grids
-temp_arr = np.logspace(np.log10(4.3e2), np.log10(4.3e4), 21) # [eV]
+temp_arr = np.logspace(np.log10(4.3e2), np.log10(4.3e4), 41) # [eV]
 dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 4) # [cm^-3]
 meta_arr = np.array([0])
 
@@ -92,13 +105,35 @@ crm.solve_cr()
 
 print('ColRadPy CR solve done')
 
+if os.path.isfile(
+    os.path.join(
+        '/nobackup1/cjperks/work',
+        'FAC/best',
+        sp,
+        sp+'%02d'%(nele+1)
+        )
+    ):
+    write_ioniz_PEC = True
+    fil_ioniz = os.path.join(
+        '/nobackup1/cjperks/work',
+        'FAC/best',
+        sp,
+        sp+'%02d'%(nele+1)
+        )
+else:
+    write_ioniz_PEC = False
+    fil_ioniz = None
+
 # Write PEC data file
 crm.write_pecs_adf15(
     fil_name=os.path.join(
         fol,
         'FAC_'+sp+'%02d.dat'%(nele)
         ),
-    wave_lims = lims
+    wave_lims = lims,
+    write_avals = True,
+    write_ioniz_PEC = write_ioniz_PEC,
+    fil_ioniz = fil_ioniz,
     )
 
 print('ColRadPy adf15 write done')

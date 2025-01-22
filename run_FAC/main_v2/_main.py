@@ -84,9 +84,6 @@ def rates(
         fac = fac,
         )
 
-    import pdb
-    pdb.set_trace()
-
     # Calculates energy levels
     if 'en' in physics:
         _en._run_en(
@@ -198,6 +195,11 @@ def _def(key=None):
         ioniz1 = ''
         ioniz2 = ''
         key = 'EBIT_W'
+    else:
+        nouter = 0
+        outer = ''
+        ioniz1 = ''
+        ioniz2 = ''
 
 
     # Various default settings
