@@ -37,11 +37,14 @@ elif sp == 'W':
     Znuc = 74
     lims = [2.6, 2.8] # XRS-HR-Xe
     #lims = [1.4, 1.8] # XRS-LR
+    #lims = [1.35, 1.41] # XRS-LR; about 3D
+    #lims = [1.1, 1.6] # XRS-LR; about 3D and 3G
 elif sp == 'Mo':
     Znuc = 42
     #lims = [2.6, 2.8] # XRS-HR-Xe
     #lims = [3.5, 4.5] # HIREX Sr
-    lims = [110,130] # LoWEUS
+    #lims = [110,130] # LoWEUS
+    lims = [23, 30] # XEUS
 elif sp == 'Fe':
     Znuc = 26
     lims = [1.4, 1.8] # XRS-LR
@@ -67,15 +70,25 @@ sys.stdout = open(
 
 # Common FAC atomic data files name
 file = os.path.join(
-    '/nobackup1/cjperks/work',
-    'FAC/best',
-    sp,
-    sp+'%02d'%(nele)
+    '/home/cjperks/orcd/scratch/work',
+    #'FAC/best/%s'%(sp),
+    #'FAC/scoping/XEUS',
+    #'FAC/scoping/XRS_LR',
+    'FAC/scoping/EBIT',
+    sp+'%02d'%(nele) # KEEP ALWAYS
     )
 
 # Simulation grids
 temp_arr = np.logspace(np.log10(4.3e2), np.log10(4.3e4), 41) # [eV]
 dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 4) # [cm^-3]
+#temp_arr = np.logspace(np.log10(4.3e2), np.log10(4.3e4), 21) # [eV]
+#temp_arr = np.r_[
+#    7000, 7500,
+#    7930, 8190, 8270, 8450, 8710, 8970, 9230, 9490, 9750,
+#    10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500,
+#    15000
+#    ] # [eV]
+#dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 2) # [cm^-3]
 meta_arr = np.array([0])
 
 # Load atomic data
@@ -94,6 +107,7 @@ crm = colradpy(
     nele = nele,                    # Number of electrons
     Zele = Znuc,                    # Nuclear charge
     EEDF = 'Maxwellian',            # Electron energy distriubtion function
+    #EEDF = 'Gaussian',
     atomic_physics = 'incl_all',    # Atomic data files to search for
     #atomic_physics = ['en', 'tr', 'ce', 'rr', 'ai'],
     )
@@ -107,22 +121,24 @@ print('ColRadPy CR solve done')
 
 if os.path.isfile(
     os.path.join(
-        '/nobackup1/cjperks/work',
-        'FAC/best',
-        sp,
-        sp+'%02d'%(nele+1)
+        '/home/cjperks/orcd/scratch/work',
+        #'FAC/best/%s'%(sp),
+        'FAC/scoping/XRS_LR',
+        sp+'%02da.en'%(nele+1) # KEEP ALWAYS
         )
     ):
     write_ioniz_PEC = True
     fil_ioniz = os.path.join(
-        '/nobackup1/cjperks/work',
-        'FAC/best',
-        sp,
-        sp+'%02d'%(nele+1)
+        '/home/cjperks/orcd/scratch/work',
+        #'FAC/best/%s'%(sp),
+        'FAC/scoping/XRS_LR',
+        sp+'%02d'%(nele+1) # KEEP ALWAYS
         )
 else:
     write_ioniz_PEC = False
     fil_ioniz = None
+print(write_ioniz_PEC)
+print(fil_ioniz)
 
 # Write PEC data file
 crm.write_pecs_adf15(
