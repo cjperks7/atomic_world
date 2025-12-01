@@ -18,6 +18,10 @@ sys.path.pop(0)
 nele = int(sys.argv[1])
 sp = sys.argv[2]
 fol = sys.argv[3]
+#nele = 13
+#sp = 'W'
+#fol = '/home/cjperks/test'
+
 
 # Prints console stdout to file
 sys.stdout = open(
@@ -42,5 +46,11 @@ FAC.rates(
     ion=sp,
     save_path = fol,
     nele = nele,
-    settings = str(nele),
+    #settings = str(nele),
+    #settings = 'EBIT_W_13',
+    #settings = 'XEUS_Mo_'+str(nele),
+    #settings = 'Survey_W_'+str(nele),
+    #settings = 'EBIT_W_'+str(nele),
+    settings = 'W7X_W_'+str(nele),
+    #physics = ['en', 'ce'],
     )
