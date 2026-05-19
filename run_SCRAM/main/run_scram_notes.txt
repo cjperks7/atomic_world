@@ -1,0 +1,31 @@
+How to run SCRAM and access resources:
+
+1) Log into the LC system. Can use:
+    i) 'ssh -l perks2 borax.llnl.gov' --> Retires Dec 5th, 2025
+    ii) 'ssh -l perks2 oslic.llnl.gov'
+
+
+2) Source environment ". $HOME/bin/init_SCRAM.sh"
+    Has useful aliases like
+    i) path to SCRAM data
+    alias ssc='cd /usr/WS1/scramx'
+    ii) running SCRAM executable
+    alias rsc82='/usr/WS1/scramx/scram82_EBIT/scram82e.o path=/g/g10/perks2/Data'
+    iii) Common SCRAM data repo
+    alias apps='cd /usr/gapps/scram'
+
+3) My common working directory
+    /usr/WS1/scramx/cjperks
+
+4) Setting up SCRAM run
+    i) Note that default atomic data repo is
+    /g/g10/perks2/Data
+    ii) Make sure there's the "termE.dat" and "termf.dat"
+    in data repo
+    iii) Make sure element-specific files are in data repo
+    "*h.2photon, *h.Ar, *h.Aug, *h.Cex, *h_CIcorr.txt, *h.cion, *h_config_key.txt,
+    *h_indx_err.txt, *h.Ion, *h.Lev, *h.rr, *h_sc_key.txt" 
+
+5) Running SCRAM
+    i) Have "mainIn.txt" in cwd
+        Need to use "nano" for file editor

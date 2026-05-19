@@ -30,6 +30,9 @@ def main82(
     name = None,
     quants = None,
     convert = True,
+    x_units = 'eV',
+    x_lim = [1,2],
+    EBIT = True,
     ):
 
     # Init
@@ -37,7 +40,7 @@ def main82(
 
     # Defaults
     if quants is None:
-        quants = ['indspec', 'spec', 'table']
+        quants = ['indspec', 'spec', 'linelist']
     if filepath is None:
         filepath = os.path.join(
             '/home/cjperks/work',
@@ -48,20 +51,26 @@ def main82(
     names = [f.split('.spec')[0] for f in os.listdir(filepath) if f.startswith(name) and f.endswith('.spec')]
     EEs = []
 
-    for nn in names:
+    for ii, nn in enumerate(names):
         print(nn)
-        Ebeam = float(nn.split('_')[-1]) # [kV]
+        if EBIT:
+            Ebeam = float(nn.split('_')[-1]) # [kV]
+        else:
+            Ebeam = ii
         EEs.append(Ebeam)
 
         # Reads table file
-        if 'table' in quants:
-            out = _read_table(
-                out=out,
+        if 'linelist' in quants:
+            if 'linelist' not in out.keys():
+                out['linelist'] = {}
+            out['linelist']['spec_%0.2fkV'%(Ebeam)] = read_linelist82(
+                dout={},
                 file = os.path.join(
                     filepath,
-                    nn+'.table'
+                    nn+'.linelist'
                     ),
-                Ebeam = Ebeam,
+                x_units = x_units,
+                x_lim = x_lim,
                 )
 
         # Reads total spectrum file
@@ -87,7 +96,7 @@ def main82(
                 )
 
     # Not checking it, but I know all the energy grids are the same
-    out['spec']['E_eV'] = out['indspec']['E_eV'] = out['spec']['spec_%0.2fkV'%(Ebeam)]['E_eV']
+    #out['spec']['E_eV'] = out['indspec']['E_eV'] = out['spec']['spec_%0.2fkV'%(Ebeam)]['E_eV']
     out['settings']['Ebeam'] = np.asarray(EEs)
 
     # Converts units to what I like
@@ -100,14 +109,12 @@ def main82(
 
 # Reads the linelist
 def read_linelist82(
+    dout = {},
     file=None,
     # Filtering
     x_units = 'eV', # 'eV' or 'AA'
     x_lim = [1,2],
     ):
-
-    # Init
-    dout = {}
 
     ion = ''
 
@@ -214,7 +221,7 @@ def read_linelist82(
     dout[ion]['g_lwr'] = {'data': np.asarray(g_lwr), 'units': ''}
     dout[ion]['dE'] = {'data': np.asarray(dE), 'units': 'eV'}
     dout[ion]['wl'] = {'data': np.asarray(wl), 'units': 'AA'}
-    dout[ion]['ems'] = {'data': np.asarray(ems), 'units': 'ph/s/atom'}
+    dout[ion]['ems'] = {'data': np.asarray(ems), 'units': r'$ph/s/cm^3$'}
     dout[ion]['Arad'] = {'data': np.asarray(Arad), 'units': '1/s'}
     dout[ion]['Aug'] = {'data': np.asarray(Aug), 'units': '1/s'}
     dout[ion]['flx_ex'] = {'data': np.asarray(flx_ex), 'units': 'frac'}
@@ -236,6 +243,7 @@ def _get_nele(
     ):
 
     labs = {
+        'bare': 0,
         'H': 1,
         'He': 2,
         'Li': 3,
@@ -302,6 +310,7 @@ def _convert(
                 #    )
                 out[key][spec]['j(ph/s/cm^3/eV)'] = (
                     out[key][spec]['j(W/cm^3/eV)']
+                    / cnt.e
                     / out[key]['E_eV']['data']
                     )
 
@@ -593,10 +602,19 @@ def _read_spec(
     frfr = []
     pp = []
 
+    # Y-units
     xx = ff.readline()
-    xx = ff.readline()
+    yunit = xx.strip()
+    
+    # Pad
     xx = ff.readline()
 
+    # X-units
+    xx = ff.readline()
+    xlab = xx.strip().split()[0]
+    xunit = xlab.split('(')[-1].split(')')[0]
+
+    # Emissivity data
     xx = ff.readline()
     while len(xx.strip()) > 0:
         dd = xx.strip().split()
@@ -615,21 +633,21 @@ def _read_spec(
 
         xx = ff.readline()
 
-    tmp['E_eV'] = {'data': np.asarray(EE), 'units': 'eV', 'num': len(EE)}
+    tmp[xlab] = {'data': np.asarray(EE), 'units': xunit, 'num': len(EE)}
 
-    tmp['j(W/cm^3/eV)'] = np.asarray(tot)/(out['settings']['psize']['data']*1e-4)
+    tmp['j(%s)'%(yunit)] = np.asarray(tot)/(out['settings']['psize']['data']*1e-4)
 
     tmp['bb'] = {
-        'j(W/cm^3/eV)': np.asarray(bb)/(out['settings']['psize']['data']*1e-4)
+        'j(%s)'%(yunit): np.asarray(bb)/(out['settings']['psize']['data']*1e-4)
         }
     tmp['bf'] = {
-        'j(W/cm^3/eV)': np.asarray(bf)/(out['settings']['psize']['data']*1e-4)
+        'j(%s)'%(yunit): np.asarray(bf)/(out['settings']['psize']['data']*1e-4)
         }
     tmp['ff'] = {
-        'j(W/cm^3/eV)': np.asarray(frfr)/(out['settings']['psize']['data']*1e-4)
+        'j(%s)'%(yunit): np.asarray(frfr)/(out['settings']['psize']['data']*1e-4)
         }
     tmp['Planck'] = {
-        'j(W/cm^3/eV)': np.asarray(pp)/(out['settings']['psize']['data']*1e-4)
+        'j(%s)'%(yunit): np.asarray(pp)/(out['settings']['psize']['data']*1e-4)
         }
     
     tmp['Ebeam'] = {'data': Ebeam, 'units': 'kV'}

@@ -1,0 +1,12 @@
+Random notes about running stuff on the LC
+
+### ---- SLURM --- ###
+partition=pbatch
+
+salloc -t 1:00:00 -p pbatch
+
+
+### --- Python --- ###
+
+Xforwarding works so can plot
+!!!Do so on a compute node so it's faster
