@@ -125,6 +125,14 @@ def _organize_data(
         }
 
     nE = ddata[lcases[0]]['spec']['spec']['E(eV)']['num']
+    dorg['E_photon'] = {
+        'data': ddata[lcases[0]]['spec']['spec']['E(eV)']['data'],
+        'units': 'eV',
+        'dim': 'dim(nE,)',
+        'name': r'$E_{photon}$',
+        'name_long': 'Photon energy'
+        }
+
     dorg['emis_ff'] = {
         'data':np.zeros((icase,nE), dtype=float),
         'units': r'$J*cm^3/s/eV/atom/electron$',
