@@ -55,6 +55,12 @@ def main86(
                 ),
             )
 
+    # Reads table of charge-state-resolved spectrum file
+    if 'indspec_table' in quants:
+        dout['indspec_table'] = _read_indspec_table(
+            file = fol,
+            )
+
     # Output
     return dout
 
@@ -63,6 +69,98 @@ def main86(
 #               Utilities
 #
 #####################################################
+
+# Organizes batches of SCRAM table runs
+def _organize_data_table(
+    # Output
+    ddata = None,
+    # Controls
+    fils = None,
+    elem = None,
+    ):
+
+    # Init
+    dorg = {}
+    Znuc = _get_nele(sym=elem.split('_')[0])
+
+    # Te grid
+    Tes = []
+    for ii, ff in enumerate(fils):
+        for jj, kk in enumerate(ddata[ff]['indspec_table'].keys()):
+            if kk == 'E':
+                continue
+            Tes.append(ddata[ff]['indspec_table'][kk]['Te']['data'])
+    
+    nTe = len(Tes)
+    dorg['Te'] = {
+        'data': np.sort(np.asarray(Tes)),
+        'units': 'eV',
+        'dim': 'dim(nTe,)',
+        'name': r'$T_e$',
+        'name_long': 'electron temperature'
+        }
+
+    # Init
+    dorg['<Z>'] = {
+        'data': np.zeros(nTe, dtype=float),
+        'units': '',
+        'dim': 'dim(nTe,)',
+        'name': r'$\langle Z \rangle$',
+        'name_long': 'effective plasma charge'
+        }
+
+    dorg['scd'] = {
+        'data':np.zeros((nTe,Znuc+1), dtype=float),
+        'units': r'$cm^3/s$',
+        'dim': 'dim(nTe, nZ)',
+        'name': 'scd',
+        'name_long': 'effective ionization rate',
+        }
+    dorg['acd'] = {
+        'data':np.zeros((nTe,Znuc+1), dtype=float),
+        'units': r'$cm^3/s$',
+        'dim': 'dim(nTe, nZ)',
+        'name': 'acd',
+        'name_long': 'effective recombination rate',
+        }
+
+    dorg['Xz'] = {
+        'data':np.zeros((nTe,Znuc+1), dtype=float),
+        'units': 'frac',
+        'dim': 'dim(nTe, nZ)',
+        'name': 'Xz',
+        'name_long': 'fractional abundance',
+        }
+
+    # Gets grid data
+    for ii, ff in enumerate(fils):
+        for jj, kk in enumerate(ddata[ff]['indspec_table'].keys()):
+            if kk == 'E':
+                continue
+            sdata = ddata[ff]['indspec_table'][kk]
+            indT = np.argmin(abs(dorg['Te']['data'] - sdata['Te']['data']))
+            ne = sdata['ne']['data']
+
+            # <Z>
+            dorg['<Z>']['data'][indT] = sdata['<Z>']['data']
+
+            # Loop over bound electrons
+            for zz, nn in enumerate(np.arange(sdata['neli'], sdata['nelf']+1)):
+                dorg['scd']['data'][indT,Znuc-nn] = (
+                    sdata['Rion']['data'][zz]
+                    /ne
+                    )
+                dorg['acd']['data'][indT,Znuc-nn] = (
+                    sdata['Rrec']['data'][zz]
+                    /ne
+                    )
+                dorg['Xz']['data'][indT,Znuc-nn] = (
+                    sdata['abund']['data'][zz]
+                    )
+
+    # Output
+    return dorg
+
 
 # Organizes a loop of SCRAM runs into a unified dictionary
 def _organize_data(
@@ -278,6 +376,9 @@ def _get_nele(
         'Se': 34,
         'Br': 35,
         'Kr': 36,
+        'Mo': 42,
+        'Xe': 54,
+        'W': 74,
         }
 
     return labs[sym]
@@ -287,6 +388,128 @@ def _get_nele(
 #               File reading
 #
 #####################################################
+
+# Reads the table file for indspec runs
+def _read_indspec_table(
+    file = None,
+    ):
+
+    # Init
+    dtab = {}
+
+    # Read file
+    ff = open(file, 'r')
+
+    ### --- Gets energy grid --- ###
+    xx = ff.readline()
+
+    # Number of grid points
+    nE = int(xx.split()[0])     
+    dtab['E'] = {
+        'data': np.zeros(nE, dtype=float),
+        'num': nE,
+        'units': 'eV',
+        'dim': 'dim(nE,)',
+        'name': r'$E_{photon}$',
+        'name_long': 'Photon energy'
+        }
+
+    # Gets energy grid
+    for ii in np.arange(nE):
+        xx = ff.readline()
+        dtab['E']['data'][ii] = float(xx.split()[0])
+
+    # Pad
+    xx = ff.readline()
+
+    ### --- Emissivity data --- ###
+
+    # Get Te block
+    xx = ff.readline()
+    nTe = 0
+    #while xx.split()[0] == 'Te(eV)':
+    while len(xx.split()) > 0:
+        # Init
+        dtab[nTe] = {}
+        stab = dtab[nTe]
+
+        if nTe == 0:
+            # Skip headers
+            xx = ff.readline()
+            xx = ff.readline()
+            xx = ff.readline()
+            xx = ff.readline()
+            xx = ff.readline()
+
+            # Header data
+            xx = ff.readline()
+
+        stab['Te'] = {
+            'data': float(xx.split()[0]),
+            'units': 'eV',
+            'name': r'$T_e$',
+            'name_long': 'electron temperature'
+            }
+        stab['ne'] = {
+            'data': float(xx.split()[1]),
+            'units': r'cm$^{-3}$',
+            'name': r'$n_e$',
+            'name_long': 'electron density'
+            }
+        stab['<Z>'] = {
+            'data': float(xx.split()[2]),
+            'units': r'',
+            'name': r'$\langle Z\rangle$',
+            'name_long': 'effective plasma charge'
+            }
+
+        # Charge state window
+        xx = ff.readline()
+        stab['neli'] = int(xx.split()[0])
+        stab['nelf'] = int(xx.split()[1])
+
+        xx = ff.readline()
+        ncs = len(xx.split())
+
+        # Abundances
+        xx = ff.readline()
+        dd = xx.split()
+        stab['abund'] = {
+            'data': np.asarray([float(dd[xz]) for xz in range(0, ncs)]),
+            'units': 'frac'
+            }
+
+        # Ionization rates
+        xx = ff.readline()
+        dd = xx.split()
+        stab['Rion'] = {
+            'data': np.asarray([float(dd[xz]) for xz in range(0, ncs)]),
+            'units': 's'
+            }
+
+        # Recombination rates
+        xx = ff.readline()
+        dd = xx.split()
+        stab['Rrec'] = {
+            'data': np.asarray([float(dd[xz]) for xz in range(0, ncs)]),
+            'units': 's'
+            }
+
+        # !!! Skips Emissivity block
+        for ii in np.arange(nE):
+            xx = ff.readline()
+
+        # Pad
+        xx = ff.readline()
+
+        # New Te block
+        nTe += 1
+        xx = ff.readline()
+
+    # Output
+    return dtab
+
+        
 
 # Reads the total spectrum file
 def _read_spec(
