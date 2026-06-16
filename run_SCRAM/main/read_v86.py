@@ -170,6 +170,7 @@ def _organize_data(
     lcases = None,
     elem = None,
     com = None,
+    neles = None,   # List of number of bound electrons of interest
     ):
 
     # Init
@@ -249,9 +250,18 @@ def _organize_data(
         'data':np.zeros((icase,nE), dtype=float),
         'units': r'$J*cm^3/s/eV/atom/electron$',
         'dim': 'dim(nTe, nE)',
-        'name': 'ff',
+        'name': 'bb',
         'name_long': 'bound-bound emissivity',
         }
+    if neles in not None:
+        nion = len(neles)
+        dorg['emis_bb_ion'] = {
+            'data':np.zeros((icase,nE, nion), dtype=float),
+            'units': r'$J*cm^3/s/eV/ion/electron$',
+            'dim': 'dim(nTe, nE, ncs)',
+            'name': 'bb',
+            'name_long': f"bound-bound emissivity per ionization charge within number of bound electrons={neles}",
+            }
     dorg['emis_tot'] = {
         'data':np.zeros((icase,nE), dtype=float),
         'units': r'$J*cm^3/s/eV/atom/electron$',
@@ -328,6 +338,21 @@ def _organize_data(
             sspec['j_bb']['data']
             /ne/ni
             )
+
+        # If b-b spectrum per ion
+        if neles is not None:
+            for nn, nele in enumerate(neles):
+                # Find ion of interest
+                if nele < sbal['neli'] or nele > sbal['nelf']:
+                    continue
+                
+                nn_ind = list(range(sbal['neli'], sbal['nelf']+1)).index(nele)
+
+                dorg['emis_bb_ion']['data'][ii,:,nn] = (
+                    sind['j_cs']['data'][:,nn_ind]
+                    *sbal['abund']['data'][nn_ind]
+                    /ne/ni
+                    )
 
     # Output
     return dorg
