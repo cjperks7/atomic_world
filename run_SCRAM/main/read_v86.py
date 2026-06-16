@@ -253,7 +253,7 @@ def _organize_data(
         'name': 'bb',
         'name_long': 'bound-bound emissivity',
         }
-    if neles in not None:
+    if neles is not None:
         nion = len(neles)
         dorg['emis_bb_ion'] = {
             'data':np.zeros((icase,nE, nion), dtype=float),
