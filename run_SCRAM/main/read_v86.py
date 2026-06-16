@@ -217,7 +217,7 @@ def _organize_data(
 
     dorg['Xz'] = {
         'data':np.zeros((icase,Znuc+1), dtype=float),
-        'units': 'frac',
+        'units': 'ion/atom',
         'dim': 'dim(nTe, nZ)',
         'name': 'Xz',
         'name_long': 'fractional abundance',
@@ -255,12 +255,12 @@ def _organize_data(
         }
     if neles is not None:
         nion = len(neles)
-        dorg['emis_bb_ion'] = {
+        dorg['emis_ion'] = {
             'data':np.zeros((icase,nE, nion), dtype=float),
             'units': r'$J*cm^3/s/eV/ion/electron$',
             'dim': 'dim(nTe, nE, ncs)',
             'name': 'bb',
-            'name_long': f"bound-bound emissivity per ionization charge within number of bound electrons={neles}",
+            'name_long': f"total emissivity per ionization charge within number of bound electrons={neles}",
             }
     dorg['emis_tot'] = {
         'data':np.zeros((icase,nE), dtype=float),
@@ -348,9 +348,9 @@ def _organize_data(
                 
                 nn_ind = list(range(sbal['neli'], sbal['nelf']+1)).index(nele)
 
-                dorg['emis_bb_ion']['data'][ii,:,nn] = (
+                dorg['emis_ion']['data'][ii,:,nn] = (
                     sind['j_cs']['data'][:,nn_ind]
-                    *sbal['abund']['data'][nn_ind]
+                    #*sbal['abund']['data'][nn_ind]
                     /ne/ni
                     )
 
