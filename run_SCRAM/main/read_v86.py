@@ -189,27 +189,27 @@ def _organize_data(
         'units': '',
         'dim': 'dim(nTe,)',
         'name': r'$\langle Z \rangle$',
-        'name_long': 'effective plasma charge'
+        'name_long': 'effective plasma charge applying coronal charge balance'
         }
     dorg['Prad'] = {
         'data': np.zeros(icase, dtype=float),
         'units': r'$W*m^3/atom/electron$',
         'dim': 'dim(nTe,)',
         'name': r'$P_{rad}$',
-        'name_long': 'radiative cooling curve'
+        'name_long': 'radiative cooling curve applying coronal charge balance'
         }
 
     Znuc = _get_nele(sym=elem.split('_')[0])
     dorg['scd'] = {
         'data':np.zeros((icase,Znuc+1), dtype=float),
-        'units': r'$cm^3/s$',
+        'units': r'$cm^3/s/electron$',
         'dim': 'dim(nTe, nZ)',
         'name': 'scd',
         'name_long': 'effective ionization rate',
         }
     dorg['acd'] = {
         'data':np.zeros((icase,Znuc+1), dtype=float),
-        'units': r'$cm^3/s$',
+        'units': r'$cm^3/s/electron$',
         'dim': 'dim(nTe, nZ)',
         'name': 'acd',
         'name_long': 'effective recombination rate',
@@ -220,7 +220,7 @@ def _organize_data(
         'units': 'ion/atom',
         'dim': 'dim(nTe, nZ)',
         'name': 'Xz',
-        'name_long': 'fractional abundance',
+        'name_long': 'ion abundance applying coronal charge balance',
         }
 
     nE = ddata[lcases[0]]['spec']['spec']['E(eV)']['num']
@@ -237,21 +237,21 @@ def _organize_data(
         'units': r'$J*cm^3/s/eV/atom/electron$',
         'dim': 'dim(nTe, nE)',
         'name': 'ff',
-        'name_long': 'free-free emissivity',
+        'name_long': 'free-free emissivity applying coronal charge balance',
         }
     dorg['emis_fb'] = {
         'data':np.zeros((icase,nE), dtype=float),
         'units': r'$J*cm^3/s/eV/atom/electron$',
         'dim': 'dim(nTe, nE)',
         'name': 'fb',
-        'name_long': 'free-bound emissivity',
+        'name_long': 'free-bound emissivity applying coronal charge balance',
         }
     dorg['emis_bb'] = {
         'data':np.zeros((icase,nE), dtype=float),
         'units': r'$J*cm^3/s/eV/atom/electron$',
         'dim': 'dim(nTe, nE)',
         'name': 'bb',
-        'name_long': 'bound-bound emissivity',
+        'name_long': 'bound-bound emissivity applying coronal charge balance',
         }
     if neles is not None:
         nion = len(neles)
@@ -260,14 +260,14 @@ def _organize_data(
             'units': r'$J*cm^3/s/eV/ion/electron$',
             'dim': 'dim(nTe, nE, ncs)',
             'name': 'bb',
-            'name_long': f"total emissivity per ionization charge within number of bound electrons={neles}",
+            'name_long': f"total emissivity per ionization state within number of bound electrons={neles}",
             }
     dorg['emis_tot'] = {
         'data':np.zeros((icase,nE), dtype=float),
         'units': r'$J*cm^3/s/eV/atom/electron$',
         'dim': 'dim(nTe, nE)',
         'name': 'emis',
-        'name_long': 'total emissivity',
+        'name_long': 'total emissivity applying coronal charge balance',
         }
 
     # Loop over cases
