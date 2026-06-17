@@ -10,6 +10,7 @@ import sys, os
 import numpy as np
 import copy
 import scipy.constants as cnt
+import re
 
 __all__ = [
     'main86',
@@ -408,6 +409,18 @@ def _get_nele(
 
     return labs[sym]
 
+# Error handling in file reading
+def _safe_float(s):
+    try:
+        return float(s)
+    except ValueError:
+        # fix Fortran-style exponents like '9.84962-100' -> '9.84962E-100'
+        fixed = re.sub(r'(\d)([+-]\d)', r'\1E\2', s)
+        try:
+            return float(fixed)
+        except ValueError:
+            return 0.0
+
 #####################################################
 #
 #               File reading
@@ -520,9 +533,18 @@ def _read_indspec_table(
             'units': 's'
             }
 
-        # !!! Skips Emissivity block
+        # Emissivity block
+        #stab['j_ion'] = {
+        #    'data': np.zeros((nE, ncs+1), dtype=float),
+        #    'units': 'W/ion/eV',
+        #    'dim': 'dim(nE,nZ)'
+        #    }
         for ii in np.arange(nE):
             xx = ff.readline()
+        #    dd = xx.split()
+        #    stab['j_ion']['data'][ii,:] = np.asarray(
+        #        [float(dd[xz]) for xz in range(0, ncs)]
+        #        )
 
         # Pad
         xx = ff.readline()
@@ -869,7 +891,7 @@ def _read_indspec(
 
         EE.append(float(dd[0]))
         sp.append(
-            [float(dd[xz]) for xz in range(1, len(dd))]
+            [_safe_float(dd[xz]) for xz in range(1, len(dd))]
             )
 
         xx = ff.readline()
