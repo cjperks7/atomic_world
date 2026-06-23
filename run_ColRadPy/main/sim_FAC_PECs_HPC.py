@@ -21,8 +21,8 @@ fol = sys.argv[3]
 
 if sp == 'Ar':
     Znuc = 18
-    lims = [3.5, 4.5] # HIREX Sr
-    #lims = [23,30] # XEUS
+    #lims = [3.5, 4.5] # HIREX Sr
+    lims = [23,30] # XEUS
     #lims = [215, 225] # LoWEUS
 elif sp == 'Kr':
     Znuc = 36
@@ -39,6 +39,7 @@ elif sp == 'W':
     #lims = [1.4, 1.8] # XRS-LR
     #lims = [1.35, 1.41] # XRS-LR; about 3D
     #lims = [1.1, 1.6] # XRS-LR; about 3D and 3G
+    #lims = [5.5, 6.5] # W7-X; about Ni-like W x-ray spectra
 elif sp == 'Mo':
     Znuc = 42
     #lims = [2.6, 2.8] # XRS-HR-Xe
@@ -75,20 +76,21 @@ file = os.path.join(
     #'FAC/scoping/XEUS',
     #'FAC/scoping/XRS_LR',
     'FAC/scoping/EBIT',
+    #'FAC/scoping/W7X',
     sp+'%02d'%(nele) # KEEP ALWAYS
     )
 
 # Simulation grids
-temp_arr = np.logspace(np.log10(4.3e2), np.log10(4.3e4), 41) # [eV]
-dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 4) # [cm^-3]
-#temp_arr = np.logspace(np.log10(4.3e2), np.log10(4.3e4), 21) # [eV]
-#temp_arr = np.r_[
-#    7000, 7500,
-#    7930, 8190, 8270, 8450, 8710, 8970, 9230, 9490, 9750,
-#    10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500,
-#    15000
-#    ] # [eV]
-#dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 2) # [cm^-3]
+#temp_arr = np.logspace(np.log10(1e2), np.log10(5e4), 51) # [eV]
+#dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 4) # [cm^-3]
+#temp_arr = np.logspace(np.log10(4.3e2), np.log10(4.3e4), 41) # [eV]
+temp_arr = np.r_[
+    7000, 7500,
+    7930, 8190, 8270, 8450, 8710, 8970, 9230, 9490, 9750,
+    10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500,
+    15000
+    ] # [eV]
+dens_arr = np.logspace(np.log10(1e12), np.log10(1e15), 2) # [cm^-3]
 meta_arr = np.array([0])
 
 # Load atomic data
@@ -106,8 +108,8 @@ crm = colradpy(
     ele = sp,                       # Ion species
     nele = nele,                    # Number of electrons
     Zele = Znuc,                    # Nuclear charge
-    EEDF = 'Maxwellian',            # Electron energy distriubtion function
-    #EEDF = 'Gaussian',
+    #EEDF = 'Maxwellian',            # Electron energy distriubtion function
+    EEDF = 'Gaussian',
     atomic_physics = 'incl_all',    # Atomic data files to search for
     #atomic_physics = ['en', 'tr', 'ce', 'rr', 'ai'],
     )
@@ -124,6 +126,7 @@ if os.path.isfile(
         '/home/cjperks/orcd/scratch/work',
         #'FAC/best/%s'%(sp),
         'FAC/scoping/XRS_LR',
+        #'FAC/scoping/W7X',
         sp+'%02da.en'%(nele+1) # KEEP ALWAYS
         )
     ):
@@ -132,6 +135,7 @@ if os.path.isfile(
         '/home/cjperks/orcd/scratch/work',
         #'FAC/best/%s'%(sp),
         'FAC/scoping/XRS_LR',
+        #'FAC/scoping/W7X',
         sp+'%02d'%(nele+1) # KEEP ALWAYS
         )
 else:

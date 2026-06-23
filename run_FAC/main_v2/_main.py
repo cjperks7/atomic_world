@@ -216,6 +216,12 @@ def _def(key=None):
         ioniz1 = ''
         ioniz2 = ''
         key = 'W7X_W'
+    elif key.startswith('WEST_W'):
+        nouter = int(float(key.split('WEST_W_')[-1])-18)
+        outer = ''
+        ioniz1 = ''
+        ioniz2 = ''
+        key = 'WEST_W'
     else:
         nouter = 0
         outer = ''
@@ -918,41 +924,151 @@ def _def(key=None):
                     + (' 4s%i'%(min(nouter -10, 2)) if nouter > 10 else '')
                     + (' 4p%i'%(min(nouter -12, 6)) if nouter > 12 else '')
                     ),
-                #'grd.1': (  # For Cu-like, nele = 29
-                #    '1*2 2*8 3s2 3p6 3d%i'%(min(nele-18, 10))
-                #    #+ (' 4s%i'%(min(nele -28, 2)) if nele > 28 else '')
-                #    + ' 4p1'
-                #    ),
+                'grd.1': (  # For Cu-like, nele = 29
+                    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter, 10))
+                    #+ (' 4s%i'%(min(nele -28, 2)) if nele > 28 else '')
+                    + ' 4p1'
+                    ),
                 },
             'exc':{             # --- Excited state --- # 
-                'exc.3d->4f': (
+                #'exc.3d->4f': (    # For open-shelled states
+                #    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter, 10)-1)
+                #    + (' 4s%i'%(min(nouter -10, 2)) if nouter > 10 else '')
+                #    + (' 4p%i'%(min(nouter -12, 6)) if nouter > 12 else '')
+                #    + ' 4f1'
+                #    ),
+                #'exc.3d->4d.0': (  # For open-shelled states
+                #    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter, 10)-1)
+                #    + (' 4s%i'%(min(nouter -10, 2)) if nouter > 10 else '')
+                #    + (' 4p%i'%(min(nouter -12, 6)) if nouter > 12 else '')
+                #    + ' 4d1'
+                #    ),
+                #'exc.3d->4d.1': (  # For nele>29, hole in the 4s orbital
+                #    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter, 10)-1)
+                #    + (' 4s%i'%(min(nouter -10, 2)-1) if nouter > 11 else '')
+                #    + (' 4p%i'%(min(nouter -12, 6)+1) if nouter > 11 else '')
+                #    + ' 4d1'
+                #    ),
+                'exc.3d->4': (   # For Ni-, Cu-like (nele=28,29)
+                    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter, 10)-1)
+                    + (' 4*%i'%(min(nouter -10, 2)+1) if nouter > 9 else '')
+                    ),
+                'exc.3p->4': ( # For Ni-, Cu-like (nele=28,29)
+                    '1*2 2*8 3s2 3p5 3d%i'%(min(nouter, 10))
+                    + (' 4*%i'%(min(nouter -10, 2)+1) if nouter > 9 else '')
+                    ),
+                'exc.3s->4': ( # For Ni-, Cu-like (nele=28,29)
+                    '1*2 2*8 3s1 3p6 3d%i'%(min(nouter, 10))
+                    + (' 4*%i'%(min(nouter -10, 2)+1) if nouter > 9 else '')
+                    ),
+                'exc.3d->5': (
                     '1*2 2*8 3s2 3p6 3d%i'%(min(nouter, 10)-1)
                     + (' 4s%i'%(min(nouter -10, 2)) if nouter > 10 else '')
                     + (' 4p%i'%(min(nouter -12, 6)) if nouter > 12 else '')
-                    + ' 4f1'
+                    + ' 5*1'
                     ),
-                'exc.3d->4d': (
-                    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter, 10)-1)
-                    + (' 4s%i'%(min(nouter -10, 2)) if nouter > 10 else '')
-                    + (' 4p%i'%(min(nouter -12, 6)) if nouter > 12 else '')
-                    + ' 4d1'
-                    ),
-                #'exc.3p->4s': ( # For Ni-, Cu-like (nele=28,29)
-                #    '1*2 2*8 3s2 3p5 3d%i'%(min(nouter, 10))
-                #    + (' 4s%i'%(min(nouter -10, 2)+1) if nouter > 9 else '')
-                #    ),
-                #'exc.3p->4s4p': ( # For Cu-like (nele=29)
-                #    '1*2 2*8 3s2 3p5 3d%i'%(min(nouter, 10))
-                #    + (' 4s%i'%(min(nouter -10, 2)) if nouter > 9 else '')
-                #    + ' 4p1'
-                #    ),
                 },
             'ion':{                 # --- Ionized state ---- #
                 'ion.0': (
-                    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter-18, 10))
+                    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter-1, 10))
                     + (' 4s%i'%(min(nouter -11, 2)) if nouter > 11 else '')
                     + (' 4p%i'%(min(nouter -13, 6)) if nouter > 13 else '')
                     )   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'skip_CI': False,    # Skip configuration interactions (ce: exc->exc)
+                },
+            },
+
+        'WEST_W':{
+            'method': 'string', # Define energy levels by a direct string
+            'grd':{                 # Number of electrons in each quantum number at ground
+                'grd.0': '1*2 2*8 3*18 4*%i;4d<2;4f<2'%(nouter-10)
+                },
+            'exc':{             # --- Excited state --- # 
+                'exc.4->5': (
+                    '1*2 2*8 3*18 4*%i 5*1'%(nouter-10-1) if nouter > 11
+                    else '1*2 2*8 3*18 5*1'
+                    )
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'ion.0': (
+                    '1*2 2*8 3s2 3p6 3d%i'%(min(nouter-1, 10))
+                    + (' 4s%i'%(min(nouter -11, 2)) if nouter > 11 else '')
+                    + (' 4p%i'%(min(nouter -13, 6)) if nouter > 13 else '')
+                    )   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'skip_CI': False,    # Skip configuration interactions (ce: exc->exc)
+                },
+            },
+
+        'neonlike_10':{
+            'method': 'algo', # Define energy levels by my algorithm
+            'grd':{                 # Number of electrons in each quantum number at ground
+                '1': [2],
+                '2': [8]
+                },
+            'single':{              # --- Single excited electron --- # 
+                'grd_ind': 0,       # Index of grd state base off of
+                #'n_raise': [2,1],   # List of electrons to excite
+                #'n_min': [3,2],     # Minimum quantum number to excite to
+                #'n_max': [5,4]      # Maximum quantum number to excite to
+                'n_raise': [2],
+                'n_min': [3],
+                'n_max': [10]
+                },
+            'double':{              # --- Two excited electrons --- #
+                #'n_raise': [[2,2]],
+                #'n_min': [[3,3]],
+                #'n_max': [[3,3]]
+                'n_raise': [],
+                'n_min': [],
+                'n_max': []
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'n_remove': [2]   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'l_max': 10
+                },
+            },
+
+        'neonlike_11':{
+            'method': 'string', # Define energy levels by a direct string
+            'grd':{                 # Number of electrons in each quantum number at ground
+                'grd.0': '1*2 2*8 3*1;3d<2',
+                },
+            'exc':{             # --- Excited state --- # 
+                'exc.2p->3': '1*2 2s2 2p5 3*2',
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'ion.0': '1*2 2*8',   # List of quantum numbers to remove an electron
+                'ion.1': '1*2 2*7 3*1;3p<1;3d<1',
                 },
             'spectator':{           # --- Highly excited (spectator) settings --- #
                 'ion_ind': 0,       # Ionized state to base spectators off of
