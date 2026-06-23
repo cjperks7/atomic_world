@@ -51,8 +51,9 @@ FAC.rates(
     #settings = 'XEUS_Mo_'+str(nele),
     #settings = 'Survey_W_'+str(nele),
     #settings = 'EBIT_W_'+str(nele),
+    settings = 'v2_EBIT_W_'+str(nele),
     #settings = 'W7X_W_'+str(nele),
     #settings = 'WEST_W_'+str(nele),
-    settings = 'neonlike_'+str(nele),
+    #settings = 'neonlike_'+str(nele),
     #physics = ['en', 'ce'],
     )

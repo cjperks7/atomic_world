@@ -210,6 +210,13 @@ def _def(key=None):
         ioniz1 = ''
         ioniz2 = ''
         key = 'EBIT_W'
+    elif key.startswith('v2_EBIT_W'):
+        # Organized as "XEUS_Mo_nele"
+        nouter = int(float(key.split('v2_EBIT_W_')[-1])-10)
+        outer = ''
+        ioniz1 = ''
+        ioniz2 = ''
+        key = 'v2_EBIT_W'
     elif key.startswith('W7X_W'):
         nouter = int(float(key.split('W7X_W_')[-1])-18)
         outer = ''
@@ -902,6 +909,141 @@ def _def(key=None):
                 },
             'ion':{                 # --- Ionized state ---- #
                 'ion.0': '1*2 2*8 3*%i;3d<1'%(nouter+2-1)   # List of quantum numbers to remove an electron
+                },
+            'spectator':{           # --- Highly excited (spectator) settings --- #
+                'ion_ind': 0,       # Ionized state to base spectators off of
+                'rec_pw_max': 3,    # Maximum orbital angular momentum
+                'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+                'n_spec_min': 8,    # Minimum quantum number of spectator
+                'n_spec_max': 7,    # Maximum quantum number of spectator
+                'n_ext': None,      # Highly excited state if desired
+                },
+            'restrictions': {
+                'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
+                },
+            },
+
+        'v2_EBIT_W':{
+            'method': 'string', # Define energy levels by a direct string
+            'grd':{                 # Number of electrons in each quantum number at ground
+                'grd.0': '1*2 2*8 3*%i; 3p<%i; 3d<2'%(nouter, nouter),  # If Si-like nouter=4, Al-like nouter=3
+                },
+            'exc':{             # --- Excited state --- # 
+                'exc.3p->4s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 4s1'
+                    ),
+                'exc.3p->4p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 4p1'
+                    ),
+                'exc.3p->4d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 4d1'
+                    ),
+                'exc.3p->4f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 4f1'
+                    ),
+                'exc.3s->4s': '1*2 2*8 3s1 3p%i 4s1'%(nouter-2),
+                'exc.3s->4p': '1*2 2*8 3s1 3p%i 4p1'%(nouter-2),
+                'exc.3s->4d': '1*2 2*8 3s1 3p%i 4d1'%(nouter-2),
+                'exc.3p->5s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5s1'
+                    ),
+                'exc.3p->5p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5p1'
+                    ),
+                'exc.3p->5d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5d1'
+                    ),
+                'exc.3p->5f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5f1'
+                    ),
+                'exc.3s->5s': '1*2 2*8 3s1 3p%i 5s1'%(nouter-2),
+                'exc.3s->5p': '1*2 2*8 3s1 3p%i 5p1'%(nouter-2),
+                'exc.3s->5d': '1*2 2*8 3s1 3p%i 5d1'%(nouter-2),
+                'exc.3p->6s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6s1'
+                    ),
+                'exc.3p->6p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6p1'
+                    ),
+                'exc.3p->6d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6d1'
+                    ),
+                'exc.3p->6f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6f1'
+                    ),
+                'exc.3s->6s': '1*2 2*8 3s1 3p%i 6s1'%(nouter-2),
+                'exc.3s->6p': '1*2 2*8 3s1 3p%i 6p1'%(nouter-2),
+                'exc.3s->6d': '1*2 2*8 3s1 3p%i 6d1'%(nouter-2),
+                'exc.3p->7s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7s1'
+                    ),
+                'exc.3p->7p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7p1'
+                    ),
+                'exc.3p->7d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7d1'
+                    ),
+                'exc.3p->7f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7f1'
+                    ),
+                'exc.3p->8s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8s1'
+                    ),
+                'exc.3p->8p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8p1'
+                    ),
+                'exc.3p->8d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8d1'
+                    ),
+                'exc.3p->8f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8f1'
+                    ),
+                },
+            'ion':{                 # --- Ionized state ---- #
+                'ion.0': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    )   # List of quantum numbers to remove an electron
                 },
             'spectator':{           # --- Highly excited (spectator) settings --- #
                 'ion_ind': 0,       # Ionized state to base spectators off of
