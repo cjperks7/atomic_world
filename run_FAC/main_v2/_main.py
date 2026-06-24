@@ -1039,6 +1039,46 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 8f1'
                     ),
+                'exc.3p->9s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 9s1'
+                    ),
+                'exc.3p->9p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 9p1'
+                    ),
+                'exc.3p->9d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 9d1'
+                    ),
+                'exc.3p->9f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 9f1'
+                    ),
+                'exc.3p->10s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 10s1'
+                    ),
+                'exc.3p->10p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 10p1'
+                    ),
+                'exc.3p->10d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 10d1'
+                    ),
+                'exc.3p->10f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 10f1'
+                    ),
                 },
             'ion':{                 # --- Ionized state ---- #
                 'ion.0': (
