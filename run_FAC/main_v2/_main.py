@@ -999,46 +999,46 @@ def _def(key=None):
                 'exc.3s->6s': '1*2 2*8 3s1 3p%i 6s1'%(nouter-2),
                 'exc.3s->6p': '1*2 2*8 3s1 3p%i 6p1'%(nouter-2),
                 'exc.3s->6d': '1*2 2*8 3s1 3p%i 6d1'%(nouter-2),
-                #'exc.3p->7s': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 7s1'
-                #    ),
-                #'exc.3p->7p': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 7p1'
-                #    ),
-                #'exc.3p->7d': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 7d1'
-                #    ),
-                #'exc.3p->7f': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 7f1'
-                #    ),
-                #'exc.3p->8s': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 8s1'
-                #    ),
-                #'exc.3p->8p': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 8p1'
-                #    ),
-                #'exc.3p->8d': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 8d1'
-                #    ),
-                #'exc.3p->8f': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 8f1'
-                #    ),
+                'exc.3p->7s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7s1'
+                    ),
+                'exc.3p->7p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7p1'
+                    ),
+                'exc.3p->7d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7d1'
+                    ),
+                'exc.3p->7f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7f1'
+                    ),
+                'exc.3p->8s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8s1'
+                    ),
+                'exc.3p->8p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8p1'
+                    ),
+                'exc.3p->8d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8d1'
+                    ),
+                'exc.3p->8f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8f1'
+                    ),
                 },
             'ion':{                 # --- Ionized state ---- #
                 'ion.0': (
