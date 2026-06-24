@@ -1019,6 +1019,9 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 7f1'
                     ),
+                'exc.3s->7s': '1*2 2*8 3s1 3p%i 7s1'%(nouter-2),
+                'exc.3s->7p': '1*2 2*8 3s1 3p%i 7p1'%(nouter-2),
+                'exc.3s->7d': '1*2 2*8 3s1 3p%i 7d1'%(nouter-2),
                 'exc.3p->8s': (
                     '1*2 2*8 3s2'
                     + (' 3p1' if nouter >3 else '')
@@ -1039,6 +1042,9 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 8f1'
                     ),
+                'exc.3s->8s': '1*2 2*8 3s1 3p%i 8s1'%(nouter-2),
+                'exc.3s->8p': '1*2 2*8 3s1 3p%i 8p1'%(nouter-2),
+                'exc.3s->8d': '1*2 2*8 3s1 3p%i 8d1'%(nouter-2),
                 'exc.3p->9s': (
                     '1*2 2*8 3s2'
                     + (' 3p1' if nouter >3 else '')
