@@ -972,9 +972,9 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 5f1'
                     ),
-                #'exc.3s->5s': '1*2 2*8 3s1 3p%i 5s1'%(nouter-2),
-                #'exc.3s->5p': '1*2 2*8 3s1 3p%i 5p1'%(nouter-2),
-                #'exc.3s->5d': '1*2 2*8 3s1 3p%i 5d1'%(nouter-2),
+                'exc.3s->5s': '1*2 2*8 3s1 3p%i 5s1'%(nouter-2),
+                'exc.3s->5p': '1*2 2*8 3s1 3p%i 5p1'%(nouter-2),
+                'exc.3s->5d': '1*2 2*8 3s1 3p%i 5d1'%(nouter-2),
                 #'exc.3p->6s': (
                 #    '1*2 2*8 3s2'
                 #    + (' 3p1' if nouter >3 else '')
