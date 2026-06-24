@@ -926,7 +926,7 @@ def _def(key=None):
         'v2_EBIT_W':{
             'method': 'string', # Define energy levels by a direct string
             'grd':{                 # Number of electrons in each quantum number at ground
-                'grd.0': '1*2 2*8 3*%i;3p<%i;3d<2'%(nouter, nouter),  # If Si-like nouter=4, Al-like nouter=3
+                'grd.0': '1*2 2*8 3*%i;3s>0;3p<%i;3d<2'%(nouter, nouter),  # If Si-like nouter=4, Al-like nouter=3
                 },
             'exc':{             # --- Excited state --- # 
                 #'exc.3p->4s': (
@@ -952,26 +952,26 @@ def _def(key=None):
                 #'exc.3s->4s': '1*2 2*8 3s1 3p%i 4s1'%(nouter-2),
                 #'exc.3s->4p': '1*2 2*8 3s1 3p%i 4p1'%(nouter-2),
                 #'exc.3s->4d': '1*2 2*8 3s1 3p%i 4d1'%(nouter-2),
-                #'exc.3p->5s': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 5s1'
-                #    ),
-                #'exc.3p->5p': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 5p1'
-                #    ),
+                'exc.3p->5s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5s1'
+                    ),
+                'exc.3p->5p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5p1'
+                    ),
                 'exc.3p->5d': (
                     '1*2 2*8 3s2'
                     + (' 3p1' if nouter >3 else '')
                     + ' 5d1'
                     ),
-                #'exc.3p->5f': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 5f1'
-                #    ),
+                'exc.3p->5f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5f1'
+                    ),
                 #'exc.3s->5s': '1*2 2*8 3s1 3p%i 5s1'%(nouter-2),
                 #'exc.3s->5p': '1*2 2*8 3s1 3p%i 5p1'%(nouter-2),
                 #'exc.3s->5d': '1*2 2*8 3s1 3p%i 5d1'%(nouter-2),
