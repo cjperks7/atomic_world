@@ -926,7 +926,8 @@ def _def(key=None):
         'v2_EBIT_W':{
             'method': 'string', # Define energy levels by a direct string
             'grd':{                 # Number of electrons in each quantum number at ground
-                'grd.0': '1*2 2*8 3*%i;3s>0;3p<%i;3d<2'%(nouter, nouter),  # If Si-like nouter=4, Al-like nouter=3
+                #'grd.0': '1*2 2*8 3*%i;3s>0;3p<%i;3d<2'%(nouter, nouter),  # If Si-like nouter=4, Al-like nouter=3
+                'grd.0': '1*2 2*8 3s2 3p%i'%(nouter-2),
                 },
             'exc':{             # --- Excited state --- # 
                 #'exc.3p->4s': (
