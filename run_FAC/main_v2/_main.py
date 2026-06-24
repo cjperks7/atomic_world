@@ -976,29 +976,29 @@ def _def(key=None):
                 'exc.3s->5s': '1*2 2*8 3s1 3p%i 5s1'%(nouter-2),
                 'exc.3s->5p': '1*2 2*8 3s1 3p%i 5p1'%(nouter-2),
                 'exc.3s->5d': '1*2 2*8 3s1 3p%i 5d1'%(nouter-2),
-                #'exc.3p->6s': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 6s1'
-                #    ),
-                #'exc.3p->6p': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 6p1'
-                #    ),
-                #'exc.3p->6d': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 6d1'
-                #    ),
-                #'exc.3p->6f': (
-                #    '1*2 2*8 3s2'
-                #    + (' 3p1' if nouter >3 else '')
-                #    + ' 6f1'
-                #    ),
-                #'exc.3s->6s': '1*2 2*8 3s1 3p%i 6s1'%(nouter-2),
-                #'exc.3s->6p': '1*2 2*8 3s1 3p%i 6p1'%(nouter-2),
-                #'exc.3s->6d': '1*2 2*8 3s1 3p%i 6d1'%(nouter-2),
+                'exc.3p->6s': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6s1'
+                    ),
+                'exc.3p->6p': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6p1'
+                    ),
+                'exc.3p->6d': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6d1'
+                    ),
+                'exc.3p->6f': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6f1'
+                    ),
+                'exc.3s->6s': '1*2 2*8 3s1 3p%i 6s1'%(nouter-2),
+                'exc.3s->6p': '1*2 2*8 3s1 3p%i 6p1'%(nouter-2),
+                'exc.3s->6d': '1*2 2*8 3s1 3p%i 6d1'%(nouter-2),
                 #'exc.3p->7s': (
                 #    '1*2 2*8 3s2'
                 #    + (' 3p1' if nouter >3 else '')
