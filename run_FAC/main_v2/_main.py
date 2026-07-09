@@ -973,6 +973,11 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 5f1'
                     ),
+                'exc.3p->5g': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 5g1'
+                    ),
                 'exc.3s->5s': '1*2 2*8 3s1 3p%i 5s1'%(nouter-2),
                 'exc.3s->5p': '1*2 2*8 3s1 3p%i 5p1'%(nouter-2),
                 'exc.3s->5d': '1*2 2*8 3s1 3p%i 5d1'%(nouter-2),
@@ -995,6 +1000,11 @@ def _def(key=None):
                     '1*2 2*8 3s2'
                     + (' 3p1' if nouter >3 else '')
                     + ' 6f1'
+                    ),
+                'exc.3p->6g': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 6g1'
                     ),
                 'exc.3s->6s': '1*2 2*8 3s1 3p%i 6s1'%(nouter-2),
                 'exc.3s->6p': '1*2 2*8 3s1 3p%i 6p1'%(nouter-2),
@@ -1019,6 +1029,11 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 7f1'
                     ),
+                'exc.3p->7g': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 7g1'
+                    ),
                 'exc.3s->7s': '1*2 2*8 3s1 3p%i 7s1'%(nouter-2),
                 'exc.3s->7p': '1*2 2*8 3s1 3p%i 7p1'%(nouter-2),
                 'exc.3s->7d': '1*2 2*8 3s1 3p%i 7d1'%(nouter-2),
@@ -1041,6 +1056,11 @@ def _def(key=None):
                     '1*2 2*8 3s2'
                     + (' 3p1' if nouter >3 else '')
                     + ' 8f1'
+                    ),
+                'exc.3p->8g': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 8g1'
                     ),
                 'exc.3s->8s': '1*2 2*8 3s1 3p%i 8s1'%(nouter-2),
                 'exc.3s->8p': '1*2 2*8 3s1 3p%i 8p1'%(nouter-2),
@@ -1065,9 +1085,14 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 9f1'
                     ),
-                'exc.3s->9s': '1*2 2*8 3s1 3p%i 9s1'%(nouter-2),
-                'exc.3s->9p': '1*2 2*8 3s1 3p%i 9p1'%(nouter-2),
-                'exc.3s->9d': '1*2 2*8 3s1 3p%i 9d1'%(nouter-2),
+                'exc.3p->9g': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 9g1'
+                    ),
+                #'exc.3s->9s': '1*2 2*8 3s1 3p%i 9s1'%(nouter-2),
+                #'exc.3s->9p': '1*2 2*8 3s1 3p%i 9p1'%(nouter-2),
+                #'exc.3s->9d': '1*2 2*8 3s1 3p%i 9d1'%(nouter-2),
                 'exc.3p->10s': (
                     '1*2 2*8 3s2'
                     + (' 3p1' if nouter >3 else '')
@@ -1088,9 +1113,14 @@ def _def(key=None):
                     + (' 3p1' if nouter >3 else '')
                     + ' 10f1'
                     ),
-                'exc.3s->10s': '1*2 2*8 3s1 3p%i 10s1'%(nouter-2),
-                'exc.3s->10p': '1*2 2*8 3s1 3p%i 10p1'%(nouter-2),
-                'exc.3s->10d': '1*2 2*8 3s1 3p%i 10d1'%(nouter-2),
+                'exc.3p->10g': (
+                    '1*2 2*8 3s2'
+                    + (' 3p1' if nouter >3 else '')
+                    + ' 10g1'
+                    ),
+                #'exc.3s->10s': '1*2 2*8 3s1 3p%i 10s1'%(nouter-2),
+                #'exc.3s->10p': '1*2 2*8 3s1 3p%i 10p1'%(nouter-2),
+                #'exc.3s->10d': '1*2 2*8 3s1 3p%i 10d1'%(nouter-2),
                 },
             'ion':{                 # --- Ionized state ---- #
                 'ion.0': (
