@@ -37,6 +37,27 @@ def _EBIT_W_Lshell(
 
     ########################################################
     #
+    #       Settings
+    #
+    ########################################################
+
+    # Define energy levels by a direct string
+    dout['method'] = 'string' 
+
+    dout['spectator'] = {           # --- Highly excited (spectator) settings --- #
+        'ion_ind': 0,       # Ionized state to base spectators off of
+        'rec_pw_max': 3,    # Maximum orbital angular momentum
+        'n_frozen': 7,      # n>n_frozen uses frozen core approximation
+        'n_spec_min': 8,    # Minimum quantum number of spectator
+        'n_spec_max': 7,    # Maximum quantum number of spectator
+        'n_ext': None,      # Highly excited state if desired
+        }
+    dout['restrictions'] = {
+        'skip_CI': True,    # Skip configuration interactions (ce: exc->exc)
+        }
+
+    ########################################################
+    #
     #       Ground states
     #
     ########################################################
