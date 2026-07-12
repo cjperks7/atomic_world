@@ -102,7 +102,7 @@ def _EBIT_W_Lshell(
     lmin = dlims[nouter]['lmin']    
     lmax = dlims[nouter]['lmax']    
 
-    kshells = ['3s', '3p']
+    kshells = ['3p', '3s']
 
     # Loop over outershells
     for kshell in kshells:
