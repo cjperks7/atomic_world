@@ -85,6 +85,72 @@ def _EBIT_W_Lshell(
     ########################################################
     dout['exc'] = {}
 
+    ### --- 3l --> nl', outershell transitions --- ###
+    dlims = {
+        0: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ne-like, irrelavent here
+        1: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Na-like
+        2: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Mg-like
+        3: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Al-like
+        4: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Si-like
+        5: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # P-like
+        6: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # S-like
+        7: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Cl-like
+        8: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ar-like
+        }
+    nmin = dlims[nouter]['nmin']    # NOTE: n=3 levels handled by ground state
+    nmax = dlims[nouter]['nmax']    
+    lmin = dlims[nouter]['lmin']    
+    lmax = dlims[nouter]['lmax']    
+
+    kshells = ['3s', '3p']
+
+    # Loop over outershells
+    for kshell in kshells:
+        # If exciting 3s electron, but no 3s electron
+        if kshell == '3s' and nouter <=0:
+            continue
+        elif kshell == '3s':
+            ns_exc = 1
+            np_exc = 0
+        # If exciting 3p electron, but no 3p electron
+        if kshell == '3p' and nouter <=2:
+            continue
+        elif kshell == '3p':
+            ns_exc = 0
+            np_exc = 1
+
+        # Loop over n
+        for nn in np.arange(nmin, nmax+1):
+            # Loop over l
+            for ll in np.arange(lmin, lmax+1):
+                # Skip nonsense
+                if ll >= nn:
+                    continue
+
+                # Labels transition
+                kkey = 'exc.%s->%i%s'%(
+                    kshell, nn, llist[ll]
+                    )
+
+                # Init
+                ktrans = '1*2 2*8'
+
+                # Handles 3s-> nl, n>3
+                ktrans += (
+                    (
+                        ' 3s%i'%(ns_orb-ns_exc) if ns_orb>ns_exc
+                        else ''
+                        )
+                    + (
+                        ' 3p%i'%(np_orb-np_exc) if np_orb>np_exc
+                        else ''
+                        )
+                    + ' %i%s1'%(nn, llist[ll])
+                    )
+
+                # Makes dictionary entry
+                dout['exc'][kkey] = ktrans
+
     ### --- 2p -> nl, innershell transitions --- ###
     dlims = {
         0: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ne-like
@@ -158,72 +224,6 @@ def _EBIT_W_Lshell(
 
             # Makes dictionary entry
             dout['exc'][kkey] = ktrans
-
-    ### --- 3l --> nl', outershell transitions --- ###
-    dlims = {
-        0: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ne-like, irrelavent here
-        1: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Na-like
-        2: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Mg-like
-        3: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Al-like
-        4: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Si-like
-        5: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # P-like
-        6: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # S-like
-        7: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Cl-like
-        8: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ar-like
-        }
-    nmin = dlims[nouter]['nmin']    # NOTE: n=3 levels handled by ground state
-    nmax = dlims[nouter]['nmax']    
-    lmin = dlims[nouter]['lmin']    
-    lmax = dlims[nouter]['lmax']    
-
-    kshells = ['3s', '3p']
-
-    # Loop over outershells
-    for kshell in kshells:
-        # If exciting 3s electron, but no 3s electron
-        if kshell == '3s' and nouter <=0:
-            continue
-        elif kshell == '3s':
-            ns_exc = 1
-            np_exc = 0
-        # If exciting 3p electron, but no 3p electron
-        if kshell == '3p' and nouter <=2:
-            continue
-        elif kshell == '3p':
-            ns_exc = 0
-            np_exc = 1
-
-        # Loop over n
-        for nn in np.arange(nmin, nmax+1):
-            # Loop over l
-            for ll in np.arange(lmin, lmax+1):
-                # Skip nonsense
-                if ll >= nn:
-                    continue
-
-                # Labels transition
-                kkey = 'exc.%s->%i%s'%(
-                    kshell, nn, llist[ll]
-                    )
-
-                # Init
-                ktrans = '1*2 2*8'
-
-                # Handles 3s-> nl, n>3
-                ktrans += (
-                    (
-                        ' 3s%i'%(ns_orb-ns_exc) if ns_orb>ns_exc
-                        else ''
-                        )
-                    + (
-                        ' 3p%i'%(np_orb-np_exc) if np_orb>np_exc
-                        else ''
-                        )
-                    + ' %i%s1'%(nn, llist[ll])
-                    )
-
-                # Makes dictionary entry
-                dout['exc'][kkey] = ktrans
 
     ########################################################
     #
