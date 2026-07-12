@@ -38,6 +38,7 @@ from . import _en
 from . import _ce_tr
 from . import _ci_rr
 from . import _ai_dr
+from . import _def_models
 
 __all__ = [
     'rates'
@@ -229,6 +230,9 @@ def _def(key=None):
         ioniz1 = ''
         ioniz2 = ''
         key = 'WEST_W'
+    elif key.startswith('260712_EBIT_Lshell'):
+        nouter = int(float(key.split('260712_EBIT_Lshell_')[-1])-10)
+        return _def_models._EBIT_W_Lshell(nouter=nouter)
     else:
         nouter = 0
         outer = ''
