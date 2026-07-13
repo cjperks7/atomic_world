@@ -88,14 +88,14 @@ def _EBIT_W_Lshell(
     ### --- 3l --> nl', outershell transitions --- ###
     dlims = {
         0: {'nmin': 4, 'nmax': 10, 'lmin': 0, 'lmax': 10},    # Ne-like, irrelavent here
-        1: {'nmin': 4, 'nmax': 8, 'lmin': 0, 'lmax': 5},    # Na-like
+        1: {'nmin': 4, 'nmax': 8, 'lmin': 0, 'lmax': 8},    # Na-like
         2: {'nmin': 4, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Mg-like
         3: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Al-like
         4: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # Si-like
         5: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # P-like
         6: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # S-like
         7: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Cl-like
-        8: {'nmin': 4, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Ar-like
+        8: {'nmin': 4, 'nmax': 7, 'lmin': 0, 'lmax': 7},    # Ar-like
         }
     nmin = dlims[nouter]['nmin']    # NOTE: n=3 levels handled by ground state
     nmax = dlims[nouter]['nmax']    
@@ -121,15 +121,11 @@ def _EBIT_W_Lshell(
 
         # Loop over n
         for nn in np.arange(nmin, nmax+1):
-            # Loop over l
-            for ll in np.arange(lmin, lmax+1):
-                # Skip nonsense
-                if ll >= nn:
-                    continue
-
+            # Just do all orbitals to manage number of data blocks in the out files
+            if lmax >= nmax:
                 # Labels transition
-                kkey = 'exc.%s->%i%s'%(
-                    kshell, nn, llist[ll]
+                kkey = 'exc.%s->%i'%(
+                    kshell, nn
                     )
 
                 # Init
@@ -145,23 +141,55 @@ def _EBIT_W_Lshell(
                         ' 3p%i'%(np_orb-np_exc) if np_orb>np_exc
                         else ''
                         )
-                    + ' %i%s1'%(nn, llist[ll])
+                    + ' %i*1'%(nn)
                     )
 
                 # Makes dictionary entry
                 dout['exc'][kkey] = ktrans
 
+            # Specify each l
+            else:
+                # Loop over l
+                for ll in np.arange(lmin, lmax+1):
+                    # Skip nonsense
+                    if ll >= nn:
+                        continue
+
+                    # Labels transition
+                    kkey = 'exc.%s->%i%s'%(
+                        kshell, nn, llist[ll]
+                        )
+
+                    # Init
+                    ktrans = '1*2 2*8'
+
+                    # Handles 3s-> nl, n>3
+                    ktrans += (
+                        (
+                            ' 3s%i'%(ns_orb-ns_exc) if ns_orb>ns_exc
+                            else ''
+                            )
+                        + (
+                            ' 3p%i'%(np_orb-np_exc) if np_orb>np_exc
+                            else ''
+                            )
+                        + ' %i%s1'%(nn, llist[ll])
+                        )
+
+                    # Makes dictionary entry
+                    dout['exc'][kkey] = ktrans
+
     ### --- 2p -> nl, innershell transitions --- ###
     dlims = {
         0: {'nmin': 3, 'nmax': 10, 'lmin': 0, 'lmax': 10},    # Ne-like
-        1: {'nmin': 3, 'nmax': 8, 'lmin': 0, 'lmax': 5},    # Na-like
+        1: {'nmin': 3, 'nmax': 8, 'lmin': 0, 'lmax': 8},    # Na-like
         2: {'nmin': 3, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Mg-like
         3: {'nmin': 3, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Al-like
         4: {'nmin': 3, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # Si-like
         5: {'nmin': 3, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # P-like
         6: {'nmin': 3, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # S-like
         7: {'nmin': 3, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Cl-like
-        8: {'nmin': 3, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Ar-like
+        8: {'nmin': 3, 'nmax': 7, 'lmin': 0, 'lmax': 7},    # Ar-like
         }
     nmin = dlims[nouter]['nmin']  
     nmax = dlims[nouter]['nmax']    
@@ -170,60 +198,88 @@ def _EBIT_W_Lshell(
 
     # Loop over n
     for nn in np.arange(nmin, nmax+1):
-        # Loop over l
-        for ll in np.arange(lmin, lmax+1):
-            # If 3s orbital is filled
-            if nn==3 and ll==0 and nouter>=2:
-                continue
-            # If 3p orbital is filled
-            if nn==3 and ll==1 and nouter>=8:
-                continue
-            if ll >= nn:
-                continue
-            
+        # Just do all orbitals to manage number of data blocks in the out files
+        if lmax >= nmax and nn!=3:
             # Labels transition
-            kkey = 'exc.2p->%i%s'%(
-                nn, llist[ll]
+            kkey = 'exc.2p->%i'%(
+                nn
                 )
 
             # Init
             ktrans = '1*2 2s2 2p5'
 
-            # Handles 2p->3s orbital
-            if nn==3 and ll==0:
-                ktrans += (
-                    ' 3s%i'%(nouter+1)
-                    )
-
-            # Handles 2p->3p orbital
-            elif nn==3 and ll==1:
-                ktrans += (
-                    (
-                        ' 3s%i'%(min(2,nouter)) if nouter >0
-                        else ''
-                        )
-                    + (
-                        ' 3p1' if nouter < 3
-                        else ' 3p%i'%(nouter-1)
-                        )
-                    )
-
             # Handles 2p-> nl, n>3
-            else:
-                ktrans += (
-                    (
-                        ' 3s%i'%(ns_orb) if ns_orb>0
-                        else ''
-                        )
-                    + (
-                        ' 3p%i'%(np_orb) if np_orb>0
-                        else ''
-                        )
-                    + ' %i%s1'%(nn, llist[ll])
+            ktrans += (
+                (
+                    ' 3s%i'%(ns_orb) if ns_orb>0
+                    else ''
                     )
+                + (
+                    ' 3p%i'%(np_orb) if np_orb>0
+                    else ''
+                    )
+                + ' %i*1'%(nn)
+                )
 
             # Makes dictionary entry
             dout['exc'][kkey] = ktrans
+
+        # Specify each l
+        else:
+            # Loop over l
+            for ll in np.arange(lmin, lmax+1):
+                # If 3s orbital is filled
+                if nn==3 and ll==0 and nouter>=2:
+                    continue
+                # If 3p orbital is filled
+                if nn==3 and ll==1 and nouter>=8:
+                    continue
+                if ll >= nn:
+                    continue
+                
+                # Labels transition
+                kkey = 'exc.2p->%i%s'%(
+                    nn, llist[ll]
+                    )
+
+                # Init
+                ktrans = '1*2 2s2 2p5'
+
+                # Handles 2p->3s orbital
+                if nn==3 and ll==0:
+                    ktrans += (
+                        ' 3s%i'%(nouter+1)
+                        )
+
+                # Handles 2p->3p orbital
+                elif nn==3 and ll==1:
+                    ktrans += (
+                        (
+                            ' 3s%i'%(min(2,nouter)) if nouter >0
+                            else ''
+                            )
+                        + (
+                            ' 3p1' if nouter < 3
+                            else ' 3p%i'%(nouter-1)
+                            )
+                        )
+
+                # Handles 2p-> nl, n>3
+                else:
+                    ktrans += (
+                        (
+                            ' 3s%i'%(ns_orb) if ns_orb>0
+                            else ''
+                            )
+                        + (
+                            ' 3p%i'%(np_orb) if np_orb>0
+                            else ''
+                            )
+                        + ' %i%s1'%(nn, llist[ll])
+                        )
+
+                # Makes dictionary entry
+                dout['exc'][kkey] = ktrans
 
     ########################################################
     #
