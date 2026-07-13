@@ -88,14 +88,14 @@ def _EBIT_W_Lshell(
     ### --- 3l --> nl', outershell transitions --- ###
     dlims = {
         0: {'nmin': 4, 'nmax': 10, 'lmin': 0, 'lmax': 10},    # Ne-like, irrelavent here
-        1: {'nmin': 4, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Na-like
-        2: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 5},    # Mg-like
-        3: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 4},    # Al-like
-        4: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Si-like
-        5: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # P-like
-        6: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # S-like
-        7: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 4},    # Cl-like
-        8: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 5},    # Ar-like
+        1: {'nmin': 4, 'nmax': 8, 'lmin': 0, 'lmax': 5},    # Na-like
+        2: {'nmin': 4, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Mg-like
+        3: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Al-like
+        4: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # Si-like
+        5: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # P-like
+        6: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # S-like
+        7: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Cl-like
+        8: {'nmin': 4, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Ar-like
         }
     nmin = dlims[nouter]['nmin']    # NOTE: n=3 levels handled by ground state
     nmax = dlims[nouter]['nmax']    
