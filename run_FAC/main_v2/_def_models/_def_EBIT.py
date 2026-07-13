@@ -122,7 +122,7 @@ def _EBIT_W_Lshell(
         # Loop over n
         for nn in np.arange(nmin, nmax+1):
             # Just do all orbitals to manage number of data blocks in the out files
-            if lmax >= nmax:
+            if lmax >= nn-1:
                 # Labels transition
                 kkey = 'exc.%s->%i'%(
                     kshell, nn
@@ -199,7 +199,7 @@ def _EBIT_W_Lshell(
     # Loop over n
     for nn in np.arange(nmin, nmax+1):
         # Just do all orbitals to manage number of data blocks in the out files
-        if lmax >= nmax and nn!=3:
+        if lmax >= nn-1 and nn!=3:
             # Labels transition
             kkey = 'exc.2p->%i'%(
                 nn
