@@ -87,15 +87,15 @@ def _EBIT_W_Lshell(
 
     ### --- 3l --> nl', outershell transitions --- ###
     dlims = {
-        0: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ne-like, irrelavent here
-        1: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Na-like
-        2: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Mg-like
-        3: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Al-like
+        0: {'nmin': 4, 'nmax': 10, 'lmin': 0, 'lmax': 10},    # Ne-like, irrelavent here
+        1: {'nmin': 4, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Na-like
+        2: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 5},    # Mg-like
+        3: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 4},    # Al-like
         4: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Si-like
         5: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # P-like
         6: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # S-like
-        7: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Cl-like
-        8: {'nmin': 4, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ar-like
+        7: {'nmin': 4, 'nmax': 5, 'lmin': 0, 'lmax': 4},    # Cl-like
+        8: {'nmin': 4, 'nmax': 6, 'lmin': 0, 'lmax': 5},    # Ar-like
         }
     nmin = dlims[nouter]['nmin']    # NOTE: n=3 levels handled by ground state
     nmax = dlims[nouter]['nmax']    
@@ -153,15 +153,15 @@ def _EBIT_W_Lshell(
 
     ### --- 2p -> nl, innershell transitions --- ###
     dlims = {
-        0: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ne-like
-        1: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Na-like
-        2: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Mg-like
-        3: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Al-like
-        4: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Si-like
-        5: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # P-like
-        6: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # S-like
-        7: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Cl-like
-        8: {'nmin': 3, 'nmax': 4, 'lmin': 0, 'lmax': 3},    # Ar-like
+        0: {'nmin': 3, 'nmax': 10, 'lmin': 0, 'lmax': 10},    # Ne-like
+        1: {'nmin': 3, 'nmax': 8, 'lmin': 0, 'lmax': 5},    # Na-like
+        2: {'nmin': 3, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Mg-like
+        3: {'nmin': 3, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Al-like
+        4: {'nmin': 3, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # Si-like
+        5: {'nmin': 3, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # P-like
+        6: {'nmin': 3, 'nmax': 5, 'lmin': 0, 'lmax': 3},    # S-like
+        7: {'nmin': 3, 'nmax': 6, 'lmin': 0, 'lmax': 4},    # Cl-like
+        8: {'nmin': 3, 'nmax': 7, 'lmin': 0, 'lmax': 5},    # Ar-like
         }
     nmin = dlims[nouter]['nmin']  
     nmax = dlims[nouter]['nmax']    
