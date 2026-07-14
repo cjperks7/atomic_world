@@ -985,110 +985,110 @@ def _def(key=None):
                 'exc.3s->5s': '1*2 2*8 3s1 3p%i 5s1'%(nouter-2),
                 'exc.3s->5p': '1*2 2*8 3s1 3p%i 5p1'%(nouter-2),
                 'exc.3s->5d': '1*2 2*8 3s1 3p%i 5d1'%(nouter-2),
-                'exc.3p->6s': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 6s1'
-                    ),
-                'exc.3p->6p': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 6p1'
-                    ),
-                'exc.3p->6d': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 6d1'
-                    ),
-                'exc.3p->6f': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 6f1'
-                    ),
-                'exc.3p->6g': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 6g1'
-                    ),
-                'exc.3s->6s': '1*2 2*8 3s1 3p%i 6s1'%(nouter-2),
-                'exc.3s->6p': '1*2 2*8 3s1 3p%i 6p1'%(nouter-2),
-                'exc.3s->6d': '1*2 2*8 3s1 3p%i 6d1'%(nouter-2),
-                'exc.3p->7s': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 7s1'
-                    ),
-                'exc.3p->7p': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 7p1'
-                    ),
-                'exc.3p->7d': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 7d1'
-                    ),
-                'exc.3p->7f': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 7f1'
-                    ),
-                'exc.3p->7g': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 7g1'
-                    ),
-                'exc.3s->7s': '1*2 2*8 3s1 3p%i 7s1'%(nouter-2),
-                'exc.3s->7p': '1*2 2*8 3s1 3p%i 7p1'%(nouter-2),
-                'exc.3s->7d': '1*2 2*8 3s1 3p%i 7d1'%(nouter-2),
-                'exc.3p->8s': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 8s1'
-                    ),
-                'exc.3p->8p': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 8p1'
-                    ),
-                'exc.3p->8d': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 8d1'
-                    ),
-                'exc.3p->8f': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 8f1'
-                    ),
-                'exc.3p->8g': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 8g1'
-                    ),
-                'exc.3s->8s': '1*2 2*8 3s1 3p%i 8s1'%(nouter-2),
-                'exc.3s->8p': '1*2 2*8 3s1 3p%i 8p1'%(nouter-2),
-                'exc.3s->8d': '1*2 2*8 3s1 3p%i 8d1'%(nouter-2),
-                'exc.3p->9s': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 9s1'
-                    ),
-                'exc.3p->9p': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 9p1'
-                    ),
-                'exc.3p->9d': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 9d1'
-                    ),
-                'exc.3p->9f': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 9f1'
-                    ),
+                #'exc.3p->6s': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 6s1'
+                #    ),
+                #'exc.3p->6p': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 6p1'
+                #    ),
+                #'exc.3p->6d': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 6d1'
+                #    ),
+                #'exc.3p->6f': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 6f1'
+                #    ),
+                #'exc.3p->6g': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 6g1'
+                #    ),
+                #'exc.3s->6s': '1*2 2*8 3s1 3p%i 6s1'%(nouter-2),
+                #'exc.3s->6p': '1*2 2*8 3s1 3p%i 6p1'%(nouter-2),
+                #'exc.3s->6d': '1*2 2*8 3s1 3p%i 6d1'%(nouter-2),
+                #'exc.3p->7s': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 7s1'
+                #    ),
+                #'exc.3p->7p': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 7p1'
+                #    ),
+                #'exc.3p->7d': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 7d1'
+                #    ),
+                #'exc.3p->7f': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 7f1'
+                #    ),
+                #'exc.3p->7g': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 7g1'
+                #    ),
+                #'exc.3s->7s': '1*2 2*8 3s1 3p%i 7s1'%(nouter-2),
+                #'exc.3s->7p': '1*2 2*8 3s1 3p%i 7p1'%(nouter-2),
+                #'exc.3s->7d': '1*2 2*8 3s1 3p%i 7d1'%(nouter-2),
+                #'exc.3p->8s': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 8s1'
+                #    ),
+                #'exc.3p->8p': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 8p1'
+                #    ),
+                #'exc.3p->8d': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 8d1'
+                #    ),
+                #'exc.3p->8f': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 8f1'
+                #    ),
+                #'exc.3p->8g': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 8g1'
+                #    ),
+                #'exc.3s->8s': '1*2 2*8 3s1 3p%i 8s1'%(nouter-2),
+                #'exc.3s->8p': '1*2 2*8 3s1 3p%i 8p1'%(nouter-2),
+                #'exc.3s->8d': '1*2 2*8 3s1 3p%i 8d1'%(nouter-2),
+                #'exc.3p->9s': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 9s1'
+                #    ),
+                #'exc.3p->9p': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 9p1'
+                #    ),
+                #'exc.3p->9d': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 9d1'
+                #    ),
+                #'exc.3p->9f': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 9f1'
+                #    ),
                 #'exc.3p->9g': (
                 #    '1*2 2*8 3s2'
                 #    + (' 3p1' if nouter >3 else '')
@@ -1097,26 +1097,26 @@ def _def(key=None):
                 #'exc.3s->9s': '1*2 2*8 3s1 3p%i 9s1'%(nouter-2),
                 #'exc.3s->9p': '1*2 2*8 3s1 3p%i 9p1'%(nouter-2),
                 #'exc.3s->9d': '1*2 2*8 3s1 3p%i 9d1'%(nouter-2),
-                'exc.3p->10s': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 10s1'
-                    ),
-                'exc.3p->10p': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 10p1'
-                    ),
-                'exc.3p->10d': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 10d1'
-                    ),
-                'exc.3p->10f': (
-                    '1*2 2*8 3s2'
-                    + (' 3p1' if nouter >3 else '')
-                    + ' 10f1'
-                    ),
+                #'exc.3p->10s': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 10s1'
+                #    ),
+                #'exc.3p->10p': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 10p1'
+                #    ),
+                #'exc.3p->10d': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 10d1'
+                #    ),
+                #'exc.3p->10f': (
+                #    '1*2 2*8 3s2'
+                #    + (' 3p1' if nouter >3 else '')
+                #    + ' 10f1'
+                #    ),
                 #'exc.3p->10g': (
                 #    '1*2 2*8 3s2'
                 #    + (' 3p1' if nouter >3 else '')
