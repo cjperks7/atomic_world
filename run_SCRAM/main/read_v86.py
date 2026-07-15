@@ -190,7 +190,7 @@ def _organize_data(
         'units': '',
         'dim': 'dim(nTe,)',
         'name': r'$\langle Z \rangle$',
-        'name_long': 'effective plasma charge applying coronal charge balance'
+        'name_long': 'average ion charge applying coronal charge balance'
         }
     dorg['Prad'] = {
         'data': np.zeros(icase, dtype=float),
